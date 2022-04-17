@@ -64,7 +64,7 @@ public:
     uint32_t lastExponent = 0;
     for (; current; current = current->next.get(), lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
-      sum += x;
+      sum += current->coefficient * x;
     }
 
     sum *= helper::pow(x, lastExponent);
