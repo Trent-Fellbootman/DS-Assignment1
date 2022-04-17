@@ -43,6 +43,15 @@ public:
               [](std::pair<T, T> a, std::pair<T, T> b) {
                 return (a.first < b.first);
               });
+    head = std::unique_ptr<Node>(new Node);
+    head->exponent = item.size();
+    std::shared_ptr<Node> cur = head;
+    for (int i = 0; i < item.size(); i++) {
+      cur->next = std::unique_ptr<Node>(new Node);
+      cur->next->coefficient = item[i].first;
+      cur->next->exponent = item[i].second;
+      cur = cur->next;
+    }
   }
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
