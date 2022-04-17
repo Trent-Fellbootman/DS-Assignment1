@@ -190,6 +190,6 @@ Application<T>::evaluateExpression(std::string expr) {}
 template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
   std::vector<double> values(canvasExtent.width);
-  double pace = width
+  double pace = canvasExtent.width / (canvasExtent.width - 1);
 }
 } // namespace app

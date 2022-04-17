@@ -13,8 +13,8 @@ public:
 
 private:
   struct Extent {
-    int width;
-    int height;
+    uint32_t width;
+    uint32_t height;
   };
 
   std::map<std::string, poly::Polynomial<T>> polynomials;
