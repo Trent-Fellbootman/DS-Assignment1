@@ -38,6 +38,7 @@ class Polynomial {
 
 public:
   Polynomial() = delete;
+
   Polynomial(std::vector<std::pair<T, T>> item) {
     std::sort(item.begin(), item.end(),
               [](std::pair<T, T> a, std::pair<T, T> b) {
@@ -53,15 +54,17 @@ public:
       cur = cur->next.get();
     }
   }
+
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
   Polynomial &operator=(Polynomial &&) = default;
+
   uint32_t getLength() { return head->exponent; }
 
   T evaluate(T x) const {
     T sum = 0;
     Node* current = head->next.get();
-    uint32_t lastExponent = 0;
+    uint32_t lastExponent = current->exponent;
     for (; current; current = current->next.get(), lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += current->coefficient * x;
@@ -80,7 +83,7 @@ public:
     }
   }
 
-  Polynomial &&operator+(Polynomial &poly) {
+  Polynomial &&operator+(Polynomial &poly) const {
     Polynomial res{head->copy()};
 
     res.head->exponent = 0;
@@ -114,7 +117,7 @@ public:
     return std::move(res);
   }
 
-  Polynomial &&operator*(T scale) {
+  Polynomial &&operator*(T scale) const {
     Polynomial poly = copy();
     for (Node* current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
@@ -122,7 +125,7 @@ public:
     return std::move(poly);
   }
 
-  Polynomial &&operator/(T scale) {
+  Polynomial &&operator/(T scale) const {
     Polynomial poly = copy();
     for (Node* current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
@@ -130,6 +133,6 @@ public:
     return std::move(poly);
   }
 
-  Polynomial &&operator-(Polynomial &poly) { return operator+(poly * -1); }
+  Polynomial &&operator-(Polynomial &poly) const { return operator+(poly * -1); }
 };
 } // namespace poly
