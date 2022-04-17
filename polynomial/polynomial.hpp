@@ -6,16 +6,16 @@ namespace poly {
 
 namespace helper {
 template <typename T> T pow(T x, uint32_t exp) {
-	T ans = 1;
-	T ck = x;
-	while (exp != 0) {
-		if ((exp & 1) == 1) {
-			ans = ans * ck;
-		}
-		exp = exp >> 1;
-		ck = ck * ck;
-	}
-	return ans;
+  T ans = 1;
+  T ck = x;
+  while (exp != 0) {
+    if ((exp & 1) == 1) {
+      ans = ans * ck;
+    }
+    exp = exp >> 1;
+    ck = ck * ck;
+  }
+  return ans;
 }
 } // namespace helper
 
@@ -57,10 +57,10 @@ public:
 
   Polynomial &&copy() {
     Polynomial poly{head->copy()};
-
-    for (Node *cur = head->next, Node *cpCur = poly.head; cur->next;
+    Node *cpCur = poly.head;
+    for (Node *cur = head->next; cur->next;
          cur = cur->next, cpCur = cpCur->next) {
-      cpCur.next = cur->next->copy();
+      cpCur->next = cur->next->copy();
     }
   }
 
@@ -85,8 +85,6 @@ public:
     return std::move(poly);
   }
 
-  Polynomial &&operator-(Polynomial &poly) {
-    Polynomial cpPoly = copy();
-  }
+  Polynomial &&operator-(Polynomial &poly) { Polynomial cpPoly = copy(); }
 };
 } // namespace poly
