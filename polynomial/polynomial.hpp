@@ -98,7 +98,7 @@ public:
 
     if (cur1 != nullptr || cur2 != nullptr) {
       for (Node *remaining = cur1 ? cur1 : cur2; remaining;
-           remaining = remaining->next) {
+           remaining = remaining->next, res.head->exponent++) {
         cur->next = &remaining->copy();
         cur = cur->next;
       }
