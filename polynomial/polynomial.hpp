@@ -68,8 +68,8 @@ public:
     Polynomial res{&head->copy()};
 
     res.head->exponent = 0;
-    for (Node *cur = res.head, *cur1 = head->next, *cur2 = poly.head->next;
-         cur1 && cur2; res.head->exponent++) {
+    Node *cur = res.head, *cur1 = head->next, *cur2 = poly.head->next;
+    for (; cur1 && cur2; res.head->exponent++) {
       if (cur1->exponent < cur2->exponent) {
         cur->next = cur2->copy();
         cur2 = cur2->next;
@@ -90,7 +90,7 @@ public:
     if (cur1 != nullptr || cur2 != nullptr) {
       for (Node *remaining = cur1 ? cur1 : cur2; remaining;
            remaining = remaining->next) {
-        cur->next = &remaining.copy();
+        cur->next = &remaining->copy();
         cur = cur->next;
       }
     }
@@ -114,8 +114,6 @@ public:
     return std::move(poly);
   }
 
-  Polynomial &&operator-(Polynomial &poly) {
-    return operator+(poly * -1)
-  }
+  Polynomial &&operator-(Polynomial &poly) { return operator+(poly * -1); }
 };
 } // namespace poly
