@@ -1,7 +1,10 @@
-#include "polynomial/polynomial.hpp"
+#include "application/application.hpp"
 #include <iostream>
 
 using namespace std;
-using namespace poly;
 
-int main() { return 0; }
+int main() {
+  app::Application<double> myApp;
+  myApp.run();
+  return 0;
+}

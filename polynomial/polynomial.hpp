@@ -2,9 +2,9 @@
 #include <cstdint>
 #include <map>
 #include <memory>
-#include <vector>
 #include <sstream>
 #include <string>
+#include <vector>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
@@ -45,11 +45,11 @@ class Polynomial {
   std::unique_ptr<Node> head;
 
 public:
-  Polynomial() = delete;
+  Polynomial() : Polynomial(std::vector<std::pair<T, uint32_t>>{(1, 1)}){};
 
-  Polynomial(std::vector<std::pair<T, T>> item) {
+  Polynomial(std::vector<std::pair<T, uint32_t>> item) {
     std::sort(item.begin(), item.end(),
-              [](std::pair<T, T> a, std::pair<T, T> b) {
+              [](std::pair<T, uint32_t> a, std::pair<T, uint32_t> b) {
                 return (a.second > b.second);
               });
     head = std::unique_ptr<Node>(new Node);
@@ -66,7 +66,7 @@ public:
   Polynomial(const Polynomial &original)
       : head(std::move(original.copy()->head)) {}
 
-  Polynomial &operator=(const Polynomial &) { return std::move(*copy()); }
+  Polynomial operator=(const Polynomial &) { return std::move(*copy()); }
 
   Polynomial &operator=(Polynomial &&) = default;
   Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
@@ -172,13 +172,12 @@ public:
   Polynomial operator-(Polynomial &poly) const { return operator+(poly * -1); }
 
   std::string format() {
-    Node* current = head->next.get();
+    Node *current = head->next.get();
     std::stringstream stream;
     stream << current->coefficient << "x^" << current->exponent;
-    current = current->next;
-    while (current) {
+    while (current->next) {
+      current = current->next.get();
       stream << " + " << current->coefficient << "x^" << current->exponent;
-      current = current->next;
     }
     return stream.str();
   }
