@@ -68,10 +68,7 @@ public:
     for (; current; current = current->next.get(), lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += current->coefficient * x;
-      if (current->next) {
-        current = current->next.get();
-        lastExponent = current->exponent;
-      } else {
+      if (current->next == nullptr) {
         break;
       }
     }
