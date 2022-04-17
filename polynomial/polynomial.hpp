@@ -39,7 +39,7 @@ class Polynomial {
   Node *head;
 
 public:
-  Polynomial(Node *head) : head(head) {}
+  Polynomial() = delete;
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
   Polynomial &&operator=(const Polynomial &&) = default;
@@ -68,8 +68,37 @@ public:
   }
 
   Polynomial &&operator+(Polynomial &poly) {
-    Polynomial cpPoly = copy();
-    // while (cpPoly = )
+    Polynomial res{&head->copy()};
+
+    res.head->exponent = 0;
+    for (Node *cur = res.head, *cur1 = head->next, *cur2 = poly.head->next;
+         cur1 && cur2; res.head->exponent++) {
+      if (cur1->exponent < cur2->exponent) {
+        cur->next = cur2->copy();
+        cur2 = cur2->next;
+        cur = cur->next;
+      } else if (cur1->exponent > cur2->exponent) {
+        cur->next = cur1->copy();
+        cur1 = cur1->next;
+        cur = cur->next;
+      } else {
+        cur->next = Node{cur1->coefficient + cur2->coefficient, cur1->exponent,
+                         nullptr};
+        cur1 = cur1->next;
+        cur2 = cur2->next;
+        cur = cur->next;
+      }
+    }
+
+    if (cur1 != nullptr || cur2 != nullptr) {
+      for (Node *remaining = cur1 ? cur1 : cur2; remaining;
+           remaining = remaining->next) {
+        cur->next = &remaining.copy();
+        cur = cur->next;
+      }
+    }
+
+    return std::move(res);
   }
 
   Polynomial &&operator*(T scale) {
@@ -89,7 +118,7 @@ public:
   }
 
   Polynomial &&operator-(Polynomial &poly) {
-    Polynomial cpPoly = copy();
+    return operator+(poly * -1)
   }
 };
 } // namespace poly
