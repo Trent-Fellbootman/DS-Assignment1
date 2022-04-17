@@ -1,12 +1,11 @@
 #include <algorithm>
+#include <cstdint>
 #include <map>
 #include <memory>
-#include <stdint.h>
 #include <vector>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
-
 namespace helper {
 template <typename T> T pow(T x, uint32_t exp) {
   T ans = 1;
@@ -108,7 +107,8 @@ public:
 
   Polynomial &&operator*(T scale) {
     Polynomial poly = copy();
-    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
+    for (std::shared_ptr<Node> current = poly.head->next; current;
+         current = current->next) {
       current->coefficient *= scale;
     }
     return std::move(poly);
@@ -116,7 +116,8 @@ public:
 
   Polynomial &&operator/(T scale) {
     Polynomial poly = copy();
-    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
+    for (std::shared_ptr<Node> current = poly.head->next; current;
+         current = current->next) {
       current->coefficient /= scale;
     }
     return std::move(poly);
