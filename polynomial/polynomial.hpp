@@ -3,6 +3,8 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <sstream>
+#include <string>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
@@ -168,5 +170,17 @@ public:
   }
 
   Polynomial operator-(Polynomial &poly) const { return operator+(poly * -1); }
+
+  std::string format() {
+    Node* current = head->next.get();
+    std::stringstream stream;
+    stream << current->coefficient << "x^" << current->exponent;
+    current = current->next;
+    while (current) {
+      stream << " + " << current->coefficient << "x^" << current->exponent;
+      current = current->next;
+    }
+    return stream.str();
+  }
 };
 } // namespace poly

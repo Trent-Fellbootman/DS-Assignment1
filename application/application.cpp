@@ -73,7 +73,7 @@ template <typename T> union TokenData {
 
 template <typename T> struct Token {
   TokenTypes tp;
-  TokenData data;
+  TokenData<T> data;
 };
 
 std::string strip(std::string original, char ch) {
@@ -166,7 +166,7 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::PLOT: {
-      
+
     } break;
 
     case OpType::UNKNOWN: {
@@ -186,4 +186,9 @@ template <typename T> void Application<T>::run() {
 template <typename T>
 std::unique_ptr<poly::Polynomial<T>>
 Application<T>::evaluateExpression(std::string expr) {}
+
+template <typename T>
+void Application<T>::plot(std::string polyName) {
+
+}
 } // namespace app
