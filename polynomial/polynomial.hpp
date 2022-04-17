@@ -45,7 +45,7 @@ public:
               });
     head = std::unique_ptr<Node>(new Node);
     head->exponent = item.size();
-    Node* cur = head.get();
+    Node *cur = head.get();
     for (int i = 0; i < item.size(); i++) {
       cur->next = std::unique_ptr<Node>(new Node);
       cur->next->coefficient = item[i].first;
@@ -60,11 +60,17 @@ public:
 
   T evaluate(T x) const {
     T sum = 0;
-    Node* current = head->next.get();
+    Node *current = head->next.get();
     uint32_t lastExponent = 0;
-    for (; current; current = current->next.get(), lastExponent = current->exponent) {
+    while (true) {
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += current->coefficient * x;
+      if (current->next) {
+        current = current->next.get();
+        lastExponent = current->exponent;
+      } else {
+        break;
+      }
     }
 
     sum *= helper::pow(x, lastExponent);
@@ -73,8 +79,8 @@ public:
 
   Polynomial &&copy() const {
     Polynomial poly{head->copy()};
-    Node* cpCur = poly.head;
-    for (Node* cur = head->next; cur->next;
+    Node *cpCur = poly.head;
+    for (Node *cur = head->next; cur->next;
          cur = cur->next, cpCur = cpCur->next) {
       cpCur->next = cur->next->copy();
     }
@@ -104,7 +110,7 @@ public:
     }
 
     if (cur1 != nullptr || cur2 != nullptr) {
-      for (Node* remaining = cur1 ? cur1 : cur2; remaining;
+      for (Node *remaining = cur1 ? cur1 : cur2; remaining;
            remaining = remaining->next, res.head->exponent++) {
         cur->next = remaining->copy();
         cur = cur->next;
@@ -116,7 +122,7 @@ public:
 
   Polynomial &&operator*(T scale) {
     Polynomial poly = copy();
-    for (Node* current = poly.head->next; current; current = current->next) {
+    for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
     return std::move(poly);
@@ -124,7 +130,7 @@ public:
 
   Polynomial &&operator/(T scale) {
     Polynomial poly = copy();
-    for (Node* current = poly.head->next; current; current = current->next) {
+    for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
     }
     return std::move(poly);
