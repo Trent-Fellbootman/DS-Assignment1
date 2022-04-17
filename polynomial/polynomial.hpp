@@ -25,15 +25,14 @@ class Polynomial {
   struct Node {
     T coefficient;
     uint32_t exponent;
-    Node *next;
+    std::unique_ptr<Node> next;
 
-    Node &&copy() {
-      Node cp{coefficient, exponent, next};
-      return std::move(cp);
+    std::unique_ptr<Node> copy() {
+      return std::make_unique<Node>(coefficient, exponent, next);
     }
   };
 
-  Node *head;
+  std::unique_ptr<Node> head;
 
 public:
   Polynomial() = delete;
@@ -42,9 +41,9 @@ public:
   Polynomial &&operator=(const Polynomial &&) = default;
   uint32_t getLength() { return head->exponent; }
 
-  T evaluate(T x) {
+  T evaluate(T x) const {
     T sum = 0;
-    Node *current = head->next;
+    std::shared_ptr<Node> current = head->next;
     uint32_t lastExponent = 0;
     for (; current; current = current->next, lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
@@ -55,17 +54,17 @@ public:
     return sum;
   }
 
-  Polynomial &&copy() {
+  Polynomial &&copy() const {
     Polynomial poly{head->copy()};
-    Node *cpCur = poly.head;
-    for (Node *cur = head->next; cur->next;
+    std::shared_ptr<Node> cpCur = poly.head;
+    for (std::shared_ptr<Node> cur = head->next; cur->next;
          cur = cur->next, cpCur = cpCur->next) {
       cpCur->next = cur->next->copy();
     }
   }
 
   Polynomial &&operator+(Polynomial &poly) {
-    Polynomial res{&head->copy()};
+    Polynomial res{head->copy()};
 
     res.head->exponent = 0;
     Node *cur = res.head, *cur1 = head->next, *cur2 = poly.head->next;
@@ -88,9 +87,9 @@ public:
     }
 
     if (cur1 != nullptr || cur2 != nullptr) {
-      for (Node *remaining = cur1 ? cur1 : cur2; remaining;
+      for (std::shared_ptr<Node> remaining = cur1 ? cur1 : cur2; remaining;
            remaining = remaining->next, res.head->exponent++) {
-        cur->next = &remaining->copy();
+        cur->next = remaining->copy();
         cur = cur->next;
       }
     }
@@ -100,7 +99,7 @@ public:
 
   Polynomial &&operator*(T scale) {
     Polynomial poly = copy();
-    for (Node *current = poly.head->next; current; current = current->next) {
+    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
     return std::move(poly);
@@ -108,7 +107,7 @@ public:
 
   Polynomial &&operator/(T scale) {
     Polynomial poly = copy();
-    for (Node *current = poly.head->next; current; current = current->next) {
+    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
     }
     return std::move(poly);
