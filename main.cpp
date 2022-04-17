@@ -19,6 +19,6 @@ int main() {
   std::cout << p4->evaluate(2);*/
   Polynomial<int> p1(items1);
   std::unique_ptr<Polynomial<int>> p2 = p1.copy();
-
+  std::cout << p2->evaluate(2);
   return 0;
 }

@@ -62,7 +62,8 @@ public:
     }
   }
 
-  Polynomial(const Polynomial &original) : head(std::move(original.copy()->head)) {}
+  Polynomial(const Polynomial &original)
+      : head(std::move(original.copy()->head)) {}
 
   Polynomial &operator=(const Polynomial &) { return std::move(*copy()); }
 
@@ -105,7 +106,7 @@ public:
   std::unique_ptr<Polynomial> copy() const {
     Polynomial poly{std::move(head->copy())};
     Node *cpCur = poly.head.get();
-    for (Node *cur = head->next.get(); cur->next;
+    for (Node *cur = head.get(); cur->next;
          cur = cur->next.get(), cpCur = cpCur->next.get()) {
       cpCur->next = cur->next->copy();
     }
