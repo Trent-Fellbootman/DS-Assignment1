@@ -54,7 +54,16 @@ public:
   Polynomial &&copy() {}
 
   void operator+=(Polynomial &poly) {
-    Node* cur1 = 
+    Node* cur1 = head->next, *cur2 = poly.head->next;
+    while (cur1 && cur2) {
+      if (cur1->exponent < cur2->exponent) {
+        
+      } else if (cur1->exponent > cur2->exponent) {
+
+      } else {
+
+      }
+    }
   }
 
   void operator*=(T scale) {
