@@ -52,7 +52,7 @@ public:
 
   T evaluate(T x) const {
     T sum = 0;
-    std::shared_ptr<Node> current = head->next;
+    Node* current = head->next;
     uint32_t lastExponent = 0;
     for (; current; current = current->next, lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
@@ -65,8 +65,8 @@ public:
 
   Polynomial &&copy() const {
     Polynomial poly{head->copy()};
-    std::shared_ptr<Node> cpCur = poly.head;
-    for (std::shared_ptr<Node> cur = head->next; cur->next;
+    Node* cpCur = poly.head;
+    for (Node* cur = head->next; cur->next;
          cur = cur->next, cpCur = cpCur->next) {
       cpCur->next = cur->next->copy();
     }
@@ -96,7 +96,7 @@ public:
     }
 
     if (cur1 != nullptr || cur2 != nullptr) {
-      for (std::shared_ptr<Node> remaining = cur1 ? cur1 : cur2; remaining;
+      for (Node* remaining = cur1 ? cur1 : cur2; remaining;
            remaining = remaining->next, res.head->exponent++) {
         cur->next = remaining->copy();
         cur = cur->next;
@@ -108,7 +108,7 @@ public:
 
   Polynomial &&operator*(T scale) {
     Polynomial poly = copy();
-    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
+    for (Node* current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
     return std::move(poly);
@@ -116,7 +116,7 @@ public:
 
   Polynomial &&operator/(T scale) {
     Polynomial poly = copy();
-    for (std::shared_ptr<Node> current = poly.head->next; current; current = current->next) {
+    for (Node* current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
     }
     return std::move(poly);
