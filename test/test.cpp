@@ -91,6 +91,18 @@ TEST(POLYNOMIAL_DIVISION, division) {
   EXPECT_EQ(p1.evaluate(100) / 2, p2.evaluate(100));
 }
 
+TEST(COPY, copy) {
+  std::vector<std::pair<int, int>> items1;
+  items1.push_back(std::pair<int, int>(56, 5));
+  items1.push_back(std::pair<int, int>(2, 0));
+  items1.push_back(std::pair<int, int>(78, 3));
+  Polynomial<int> p1(items1);
+  Polynomial<int> p2 = p1;
+  for (int i = 0; i < 5; i++) {
+    EXPECT_EQ(p1.evaluate(i), p2.evaluate(i));
+  }
+}
+
 int main(int argc, char *argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
