@@ -1,14 +1,25 @@
 #include "application.hpp"
 #include <iostream>
+#include <memory>
+#include <set>
 #include <sstream>
+#include <stdio.h>
 #include <string.h>
 #include <string>
-#include <stdio.h>
+#include <vector>
 
 #define BUFFER_SIZE 1024
 
 #define LEFT_BRACE '('
 #define RIGHT_BRACE ')'
+#define WHITE_SPACE ' '
+#define LEFT_BRACKET '{'
+#define RIGHT_BRACKET '}'
+
+#define PLUS_CH '+'
+#define MINUS_CH '-'
+#define MULTIPLY_CH '*'
+#define DIVIDE_CH '/'
 
 #define OP_ASSIGN "assign"
 #define OP_DISPLAY "disp"
@@ -19,6 +30,7 @@
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
 #define HELPER_MESSAGE "TODO"
+#define UNKNOWN_OP_MESSAGE "TODO"
 
 namespace app {
 
@@ -49,15 +61,72 @@ OpType stringToType(char *buffer, int length) {
   return res;
 }
 
-union Token {
+enum class TokenTypes { VAR, POLY, OP };
+
+enum class CalcOps { ADD, SUB, MUL, DIV };
+
+template <typename T> union TokenData {
   std::string variable;
-  std::string literal;
-  char operation;
+  poly::Polynomial<T> polynomial;
+  CalcOps operation;
 };
 
-std::string expressionToTokens() {
+template <typename T> struct Token {
+  TokenTypes tp;
+  TokenData data;
+};
+
+std::string strip(std::string original, char ch) {
+  while (original.find(ch) != std::string::npos) {
+    original.erase(original.find(ch));
+  }
+  return std::move(original);
+}
+
+std::vector<std::string> separate(std::string original,
+                                  std::set<char> delimiters) {
+  std::vector<std::string> res;
+
+  int last = 0;
+
+  while (true) {
+    bool found = false;
+    for (char delimiter : delimiters) {
+      int tmp = original.find_first_of(delimiter, last);
+      if (tmp != std::string::npos) {
+        if (last < tmp) {
+          res.push_back(
+              std::string(original.begin() + last, original.begin() + tmp));
+        }
+        res.push_back(
+            std::string(original.begin() + tmp, original.begin() + tmp + 1));
+        last = tmp + 1;
+        found = true;
+      }
+    }
+
+    if (!found) {
+      if (last < original.size()) {
+        res.push_back(std::string(original.begin() + last, original.end()));
+      }
+      break;
+    }
+  }
+
+  return std::move(res);
+}
+
+template <typename T>
+std::vector<Token<T>> expressionToTokens(std::string expr) {
+  std::string stripped = strip(expr, WHITE_SPACE);
+  std::set<char> delimiters{LEFT_BRACE,    RIGHT_BRACE, LEFT_BRACKET,
+                            RIGHT_BRACKET, PLUS_CH,     MINUS_CH,
+                            MULTIPLY_CH,   DIVIDE_CH};
+  std::vector<std::string> separated = separate(stripped, delimiters);
+
   
 }
+
 } // namespace helper
 
 template <typename T> void Application<T>::run() {
@@ -67,7 +136,7 @@ template <typename T> void Application<T>::run() {
     std::string input(buffer, buffer + BUFFER_SIZE);
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
-            std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
+        std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
       std::cout << INVALID_COMMAND_MESSAGE << std::endl;
       continue;
     }
@@ -82,15 +151,18 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::ASSIGN: {
-      
+
     } break;
 
     case OpType::DISPLAY: {
-      
+      printf("Found %d polynomials:\n", polynomials.size());
+      for (auto &pair : polynomials) {
+        printf("%s(x) = %s\n", pair.first, pair.second.format());
+      }
     } break;
 
     case OpType::EVALUATE: {
-      
+
     } break;
 
     case OpType::PLOT: {
@@ -98,8 +170,12 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::UNKNOWN: {
-      
+      std::cout << UNKNOWN_OP_MESSAGE;
     } break;
+
+    case OpType::EXIT: {
+      return;
+    }
 
     default:
       break;
@@ -108,7 +184,6 @@ template <typename T> void Application<T>::run() {
 }
 
 template <typename T>
-std::unique_ptr<poly::Polynomial<T>> Application<T>::evaluateExpression(std::string expr) {
-
-}
+std::unique_ptr<poly::Polynomial<T>>
+Application<T>::evaluateExpression(std::string expr) {}
 } // namespace app
