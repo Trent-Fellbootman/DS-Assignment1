@@ -3,7 +3,6 @@
 #include <map>
 #include <memory>
 #include <vector>
-#include <sstream>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
@@ -74,13 +73,10 @@ public:
 
   std::vector<std::pair<int, int>> dump() const {
     std::vector<std::pair<int, int>> ret;
-    Node *current = head->next.get();
-    for (; current; current = current->next.get()) {
-      ret.push_back(
-          std::pair<int, int>(current->coefficient, current->exponent));
-      if (current->next == nullptr) {
-        break;
-      }
+    for (Node *current = head.get(); current->next;
+         current = current->next.get()) {
+      ret.push_back(std::pair<int, int>(current->next->coefficient,
+                                        current->next->exponent));
     }
     return ret;
   }
@@ -152,10 +148,10 @@ public:
   Polynomial operator*(T scale) const {
     Polynomial poly{std::move(head->copy())};
     Node *cpCur = poly.head.get();
-    for (Node *cur = head->next.get(); cur->next;
+    for (Node *cur = head.get(); cur->next;
          cur = cur->next.get(), cpCur = cpCur->next.get()) {
       cpCur->next = cur->next->copy();
-      cpCur->coefficient *= scale;
+      cpCur->next->coefficient *= scale;
     }
     return poly;
   }
@@ -163,10 +159,10 @@ public:
   Polynomial operator/(T scale) const {
     Polynomial poly{std::move(head->copy())};
     Node *cpCur = poly.head.get();
-    for (Node *cur = head->next.get(); cur->next;
+    for (Node *cur = head.get(); cur->next;
          cur = cur->next.get(), cpCur = cpCur->next.get()) {
       cpCur->next = cur->next->copy();
-      cpCur->coefficient /= scale;
+      cpCur->next->coefficient /= scale;
     }
     return poly;
   }
