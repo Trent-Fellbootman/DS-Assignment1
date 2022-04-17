@@ -63,14 +63,25 @@ public:
 
   Polynomial(const Polynomial &) : head(std::move(copy()->head)) {}
 
-  Polynomial &operator=(const Polynomial &) {
-    return std::move(*copy());
-  }
+  Polynomial &operator=(const Polynomial &) { return std::move(*copy()); }
 
   Polynomial &operator=(Polynomial &&) = default;
   Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
 
   uint32_t getLength() { return head->exponent; }
+
+  std::vector<std::pair<int, int>> dump() const {
+    std::vector<std::pair<int, int>> ret;
+    Node *current = head->next.get();
+    for (; current; current = current->next.get()) {
+      ret.push_back(
+          std::pair<int, int>(current->coefficient, current->exponent));
+      if (current->next == nullptr) {
+        break;
+      }
+    }
+    return ret;
+  }
 
   T evaluate(T x) const {
     T sum = 0;
@@ -100,7 +111,7 @@ public:
     return std::make_unique<Polynomial>(poly);
   }
 
-  Polynomial& operator+(Polynomial &poly) const {
+  Polynomial operator+(Polynomial &poly) const {
     Polynomial res{std::move(head->copy())};
 
     res.head->exponent = 0;
@@ -136,24 +147,28 @@ public:
     return res;
   }
 
-  Polynomial& operator*(T scale) const {
-    Polynomial poly = copy();
-    for (Node *current = poly.head->next; current; current = current->next) {
-      current->coefficient *= scale;
+  Polynomial operator*(T scale) const {
+    Polynomial poly{std::move(head->copy())};
+    Node *cpCur = poly.head.get();
+    for (Node *cur = head->next.get(); cur->next;
+         cur = cur->next.get(), cpCur = cpCur->next.get()) {
+      cpCur->next = cur->next->copy();
+      cpCur->coefficient *= scale;
     }
     return poly;
   }
 
-  Polynomial& operator/(T scale) const {
-    Polynomial poly = copy();
-    for (Node *current = poly.head->next; current; current = current->next) {
-      current->coefficient /= scale;
+  Polynomial operator/(T scale) const {
+    Polynomial poly{std::move(head->copy())};
+    Node *cpCur = poly.head.get();
+    for (Node *cur = head->next.get(); cur->next;
+         cur = cur->next.get(), cpCur = cpCur->next.get()) {
+      cpCur->next = cur->next->copy();
+      cpCur->coefficient /= scale;
     }
-    poly;
+    return poly;
   }
 
-  Polynomial& operator-(Polynomial &poly) const {
-    return operator+(poly * -1);
-  }
+  Polynomial operator-(Polynomial &poly) const { return operator+(poly * -1); }
 };
 } // namespace poly
