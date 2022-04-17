@@ -3,6 +3,8 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <sstream>
+#include <string>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
