@@ -188,7 +188,8 @@ std::unique_ptr<poly::Polynomial<T>>
 Application<T>::evaluateExpression(std::string expr) {}
 
 template <typename T>
-void Application<T>::plot(std::string polyName) {
-
+void Application<T>::plot(std::string polyName, double start, double end) {
+  std::vector<double> values(canvasExtent.width);
+  double pace = width
 }
 } // namespace app

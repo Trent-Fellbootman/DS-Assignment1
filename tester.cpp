@@ -4,6 +4,8 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <iomanip>
 
 std::vector<std::string> separate(std::string original,
                                   std::set<char> delimiters) {
@@ -39,16 +41,18 @@ std::vector<std::string> separate(std::string original,
 }
 
 int main() {
-  std::string a = "ccutsadguafdccue";
+  // std::string a = "ccutsadguafdccue";
 
-  for (std::string tmp : separate(a, {'c', 'u'})) {
-    std::cout << tmp << std::endl;
-  }
+  // for (std::string tmp : separate(a, {'c', 'u'})) {
+  //   std::cout << tmp << std::endl;
+  // }
 
-  std::map<std::string, int> m;
-  m["cute"] = 1;
-  m["koala"] = 2;
-  for (auto &pair : m) {
-    std::cout << pair.first << pair.second << std::endl;
-  }
+  // std::map<std::string, int> m;
+  // m["cute"] = 1;
+  // m["koala"] = 2;
+  // for (auto &pair : m) {
+  //   std::cout << pair.first << pair.second << std::endl;
+  // }
+
+  std::cout << std::setw(20) << 2135210000.0 << "cute" << std::endl;
 }

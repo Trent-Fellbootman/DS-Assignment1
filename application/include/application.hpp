@@ -20,7 +20,7 @@ private:
   std::map<std::string, poly::Polynomial<T>> polynomials;
 
   void mainLoop();
-  void plot(std::string polyName);
+  void plot(std::string polyName, double start, double end);
 
   std::unique_ptr<poly::Polynomial<T>> evaluateExpression(std::string expr);
   Extent canvasExtent{80, 24};
