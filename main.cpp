@@ -6,7 +6,8 @@ using namespace poly;
 
 int main() {
   std::vector<std::pair<int, int>> items;
+  items.push_back(std::pair<int, int>(2, 0));
   Polynomial<int> p(items);
-  p.evaluate(0);
+  std::cout << p.evaluate(0) << std::endl;
   return 0;
 }

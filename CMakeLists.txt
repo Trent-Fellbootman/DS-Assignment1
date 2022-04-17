@@ -12,5 +12,6 @@ add_subdirectory ("test")
 add_subdirectory("application")
 
 add_executable(main main.cpp)
+target_compile_options(main PRIVATE -g)
 target_link_libraries(main INTERFACE polynomial PUBLIC application)
 
