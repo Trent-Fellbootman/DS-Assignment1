@@ -6,19 +6,16 @@ namespace poly {
 
 namespace helper {
 template <typename T> T pow(T x, uint32_t exp) {
-  if (!exp) {
-    return 1;
-  }
-
-  while (exp) {
-    if (exp % 2 == 0) {
-      T itm = pow(x, exp / 2);
-      return itm * itm;
-    } else {
-      T itm = pow(x, (exp - 1) / 2);
-      return itm * itm * x;
-    }
-  }
+	T ans = 1;
+	T ck = x;
+	while (exp != 0) {
+		if ((exp & 1) == 1) {
+			ans = ans * ck;
+		}
+		exp = exp >> 1;
+		ck = ck * ck;
+	}
+	return ans;
 }
 } // namespace helper
 
