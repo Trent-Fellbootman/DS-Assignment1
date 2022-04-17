@@ -179,10 +179,10 @@ public:
     stream << current->coefficient << "x^" << current->exponent;
     current = current->next;
     while (current) {
-      stream << " + "current->coefficient << "x^" << current->exponent;
+      stream << " + " << current->coefficient << "x^" << current->exponent;
       current = current->next;
     }
-    return std::string(stream);
+    return stream.str();
   }
 };
 } // namespace poly
