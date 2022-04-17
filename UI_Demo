@@ -1,4 +1,8 @@
-plot(a3, [10, 20])
-evaluate(a3, 1.5)
-
-assign(a1, (((a2 + a3)) * 5 + {x^1 + x^0 + 5x^7}))
+assign(a1, {2x^0})
+assign(a2, {3x^0 + 5x^1})
+assign(a3, (a1 + a2) * 5 + 3 * {1x^0 + 4x^3})
+eval(a3, 1)
+plot(a3, 0.0, 1.0)
+display()
+help()
+exit()
