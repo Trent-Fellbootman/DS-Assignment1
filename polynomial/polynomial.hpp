@@ -42,7 +42,7 @@ public:
   Polynomial(std::vector<std::pair<T, T>> item) {
     std::sort(item.begin(), item.end(),
               [](std::pair<T, T> a, std::pair<T, T> b) {
-                return (a.first < b.first);
+                return (a.second > b.second);
               });
     head = std::unique_ptr<Node>(new Node);
     head->exponent = item.size();
@@ -63,12 +63,14 @@ public:
 
   T evaluate(T x) const {
     T sum = 0;
-    Node* current = head->next.get();
+    Node *current = head->next.get();
     uint32_t lastExponent = current->exponent;
-    for (; current; current = current->next.get(), lastExponent = current->exponent) {
+    for (; current;
+         lastExponent = current->exponent, current = current->next.get()) {
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += current->coefficient;
       if (current->next == nullptr) {
+        lastExponent = current->exponent;
         break;
       }
     }
@@ -136,6 +138,8 @@ public:
     return std::move(poly);
   }
 
-  Polynomial &&operator-(Polynomial &poly) const { return operator+(poly * -1); }
+  Polynomial &&operator-(Polynomial &poly) const {
+    return operator+(poly * -1);
+  }
 };
 } // namespace poly
