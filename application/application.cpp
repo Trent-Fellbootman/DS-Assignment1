@@ -52,8 +52,7 @@ template <typename T> void Application<T>::run() {
     std::string input(buffer, buffer + BUFFER_SIZE);
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
-            std::count(input.begin(), input.end()),
-        RIGHT_BRACE == 0) {
+            std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
       std::cout << INVALID_COMMAND << std::endl;
       continue;
     }
@@ -61,7 +60,7 @@ template <typename T> void Application<T>::run() {
     int index = input.find_first_of(LEFT_BRACE);
     OpType operation = helper::stringToType(buffer, index);
 
-    switch (opration) {
+    switch (operation) {
     case OpType::HELP: {
 
     } break;

@@ -29,8 +29,14 @@ class Polynomial {
     uint32_t exponent;
     std::unique_ptr<Node> next;
 
+    Node(T coefficient, uint32_t exponent, std::unique_ptr<Node> next)
+        : coefficient(coefficient), exponent(exponent), next(std::move(next)) {}
+      
+    Node() : coefficient(0), exponent(0), next(nullptr) {}
+
     std::unique_ptr<Node> copy() {
-      return std::make_unique<Node>(coefficient, exponent, next);
+      // copy does not copy the next
+      return std::make_unique<Node>(coefficient, exponent, nullptr);
     }
   };
 
@@ -58,6 +64,7 @@ public:
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
   Polynomial &operator=(Polynomial &&) = default;
+  Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
 
   uint32_t getLength() { return head->exponent; }
 
@@ -79,66 +86,69 @@ public:
     return sum;
   }
 
-  Polynomial &&copy() const {
-    Polynomial poly{head->copy()};
+  std::unique_ptr<Polynomial> copy() const {
+    Polynomial poly{std::move(head->copy())};
     Node *cpCur = poly.head;
     for (Node *cur = head->next; cur->next;
          cur = cur->next, cpCur = cpCur->next) {
       cpCur->next = cur->next->copy();
     }
+    return std::make_unique<Polynomial>(poly);
   }
 
-  Polynomial &&operator+(Polynomial &poly) const {
-    Polynomial res{head->copy()};
+  std::unique_ptr<Polynomial> operator+(Polynomial &poly) const {
+    Polynomial res{std::move(head->copy())};
 
     res.head->exponent = 0;
-    Node *cur = res.head, *cur1 = head->next, *cur2 = poly.head->next;
+    // assume that all polynomials will not be null
+    Node *cur = res.head.get(), *cur1 = head->next.get(),
+         *cur2 = poly.head->next.get();
     for (; cur1 && cur2; res.head->exponent++) {
       if (cur1->exponent < cur2->exponent) {
         cur->next = cur2->copy();
-        cur2 = cur2->next;
-        cur = cur->next;
+        cur2 = cur2->next.get();
+        cur = cur->next.get();
       } else if (cur1->exponent > cur2->exponent) {
         cur->next = cur1->copy();
-        cur1 = cur1->next;
-        cur = cur->next;
+        cur1 = cur1->next.get();
+        cur = cur->next.get();
       } else {
-        cur->next = Node{cur1->coefficient + cur2->coefficient, cur1->exponent,
-                         nullptr};
-        cur1 = cur1->next;
-        cur2 = cur2->next;
-        cur = cur->next;
+        cur->next = std::make_unique<Node>(
+            cur1->coefficient + cur2->coefficient, cur1->exponent, nullptr);
+        cur1 = cur1->next.get();
+        cur2 = cur2->next.get();
+        cur = cur->next.get();
       }
     }
 
     if (cur1 != nullptr || cur2 != nullptr) {
       for (Node *remaining = cur1 ? cur1 : cur2; remaining;
-           remaining = remaining->next, res.head->exponent++) {
+           remaining = remaining->next.get(), res.head->exponent++) {
         cur->next = remaining->copy();
-        cur = cur->next;
+        cur = cur->next.get();
       }
     }
 
-    return std::move(res);
+    return std::make_unique<Polynomial>(std::move(res.head));
   }
 
-  Polynomial &&operator*(T scale) const {
+  std::unique_ptr<Polynomial> operator*(T scale) const {
     Polynomial poly = copy();
     for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
-    return std::move(poly);
+    return std::make_unique<Polynomial>(poly);
   }
 
-  Polynomial &&operator/(T scale) const {
+  std::unique_ptr<Polynomial> operator/(T scale) const {
     Polynomial poly = copy();
     for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
     }
-    return std::move(poly);
+    return std::make_unique<Polynomial>(poly);
   }
 
-  Polynomial &&operator-(Polynomial &poly) const {
+  std::unique_ptr<Polynomial> operator-(Polynomial &poly) const {
     return operator+(poly * -1);
   }
 };
