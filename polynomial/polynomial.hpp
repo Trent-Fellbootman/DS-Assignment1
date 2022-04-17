@@ -1,12 +1,11 @@
 #include <algorithm>
+#include <cstdint>
 #include <map>
 #include <memory>
-#include <stdint.h>
 #include <vector>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
-
 namespace helper {
 template <typename T> T pow(T x, uint32_t exp) {
   T ans = 1;
@@ -44,17 +43,26 @@ public:
               [](std::pair<T, T> a, std::pair<T, T> b) {
                 return (a.first < b.first);
               });
+    head = std::unique_ptr<Node>(new Node);
+    head->exponent = item.size();
+    Node* cur = head.get();
+    for (int i = 0; i < item.size(); i++) {
+      cur->next = std::unique_ptr<Node>(new Node);
+      cur->next->coefficient = item[i].first;
+      cur->next->exponent = item[i].second;
+      cur = cur->next.get();
+    }
   }
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
-  Polynomial &&operator=(const Polynomial &&) = default;
+  Polynomial &operator=(Polynomial &&) = default;
   uint32_t getLength() { return head->exponent; }
 
   T evaluate(T x) const {
     T sum = 0;
-    Node* current = head->next;
+    Node* current = head->next.get();
     uint32_t lastExponent = 0;
-    for (; current; current = current->next, lastExponent = current->exponent) {
+    for (; current; current = current->next.get(), lastExponent = current->exponent) {
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += x;
     }

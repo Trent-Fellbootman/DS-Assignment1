@@ -1,7 +1,12 @@
-#include <iostream>
 #include "polynomial/polynomial.hpp"
+#include <iostream>
+
+using namespace std;
+using namespace poly;
 
 int main() {
-	std::cout << poly::helper::pow(2, 11);
-	return 0;
+  std::vector<std::pair<int, int>> items;
+  Polynomial<int> p(items);
+  p.evaluate(0);
+  return 0;
 }
