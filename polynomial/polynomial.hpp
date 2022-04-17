@@ -1,5 +1,6 @@
+#include <memory>
 #include <stdint.h>
-
+// WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
 
@@ -28,11 +29,17 @@ class Polynomial {
     T coefficient;
     uint32_t exponent;
     Node *next;
+
+    Node &&copy() {
+      Node cp{coefficient, exponent, next};
+      return std::move(cp);
+    }
   };
 
   Node *head;
 
 public:
+  Polynomial(Node *head) : head(head) {}
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
   Polynomial &&operator=(const Polynomial &&) = default;
@@ -51,29 +58,38 @@ public:
     return sum;
   }
 
-  Polynomial &&copy() {}
+  Polynomial &&copy() {
+    Polynomial poly{head->copy()};
 
-  void operator+=(Polynomial &poly) {
-    Node* cur1 = head->next, *cur2 = poly.head->next;
-    while (cur1 && cur2) {
-      if (cur1->exponent < cur2->exponent) {
-        
-      } else if (cur1->exponent > cur2->exponent) {
-
-      } else {
-
-      }
+    for (Node *cur = head->next, Node *cpCur = poly.head; cur->next;
+         cur = cur->next, cpCur = cpCur->next) {
+      cpCur.next = cur->next->copy();
     }
   }
 
-  void operator*=(T scale) {
-    for (Node* current = head->next; current; current = current->next) {
+  Polynomial &&operator+(Polynomial &poly) {
+    Polynomial cpPoly = copy();
+    // while (cpPoly = )
+  }
+
+  Polynomial &&operator*(T scale) {
+    Polynomial poly = copy();
+    for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
+    return std::move(poly);
   }
 
-  void operator-=(Polynomial &poly) {
+  Polynomial &&operator/(T scale) {
+    Polynomial poly = copy();
+    for (Node *current = poly.head->next; current; current = current->next) {
+      current->coefficient /= scale;
+    }
+    return std::move(poly);
+  }
 
+  Polynomial &&operator-(Polynomial &poly) {
+    Polynomial cpPoly = copy();
   }
 };
 } // namespace poly
