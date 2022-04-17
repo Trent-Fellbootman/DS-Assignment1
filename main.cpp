@@ -1,3 +1,7 @@
+#include <iostream>
+#include "polynomial/polynomial.hpp"
+
 int main() {
-    return 0;
+	std::cout << poly::helper::pow(2, 11);
+	return 0;
 }
