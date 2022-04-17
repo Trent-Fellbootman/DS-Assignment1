@@ -48,6 +48,16 @@ OpType stringToType(char *buffer, int length) {
   buffer[length] = tmp;
   return res;
 }
+
+union Token {
+  std::string variable;
+  std::string literal;
+  char operation;
+};
+
+std::string expressionToTokens() {
+  
+}
 } // namespace helper
 
 template <typename T> void Application<T>::run() {
@@ -95,5 +105,10 @@ template <typename T> void Application<T>::run() {
       break;
     }
   }
+}
+
+template <typename T>
+std::unique_ptr<poly::Polynomial<T>> Application<T>::evaluateExpression(std::string expr) {
+
 }
 } // namespace app

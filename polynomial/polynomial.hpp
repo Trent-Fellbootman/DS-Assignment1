@@ -61,7 +61,7 @@ public:
     }
   }
 
-  Polynomial(const Polynomial &) : head(std::move(copy()->head)) {}
+  Polynomial(const Polynomial &original) : head(std::move(original.copy()->head)) {}
 
   Polynomial &operator=(const Polynomial &) { return std::move(*copy()); }
 
@@ -108,7 +108,7 @@ public:
          cur = cur->next.get(), cpCur = cpCur->next.get()) {
       cpCur->next = cur->next->copy();
     }
-    return std::make_unique<Polynomial>(poly);
+    return std::make_unique<Polynomial>(std::move(poly.head));
   }
 
   Polynomial operator+(Polynomial &poly) const {

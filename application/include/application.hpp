@@ -15,5 +15,7 @@ private:
   std::map<std::string, poly::Polynomial<T>> polynomials;
 
   void mainLoop();
+
+  std::unique_ptr<poly::Polynomial<T>> evaluateExpression(std::string expr);
 };
 }
