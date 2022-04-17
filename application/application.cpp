@@ -3,9 +3,13 @@
 #include <sstream>
 #include <string.h>
 #include <string>
+#include <stdio.h>
+
 #define BUFFER_SIZE 1024
+
 #define LEFT_BRACE '('
 #define RIGHT_BRACE ')'
+
 #define OP_ASSIGN "assign"
 #define OP_DISPLAY "disp"
 #define OP_EVALUATE "eval"
@@ -13,7 +17,8 @@
 #define OP_HELP "help"
 #define OP_EXIT "exit"
 
-#define INVALID_COMMAND "Command is invalid (Type \"help()\" for help)."
+#define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
+#define HELPER_MESSAGE "TODO"
 
 namespace app {
 
@@ -53,7 +58,7 @@ template <typename T> void Application<T>::run() {
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
             std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
-      std::cout << INVALID_COMMAND << std::endl;
+      std::cout << INVALID_COMMAND_MESSAGE << std::endl;
       continue;
     }
 
@@ -62,7 +67,8 @@ template <typename T> void Application<T>::run() {
 
     switch (operation) {
     case OpType::HELP: {
-
+      std::cout << HELPER_MESSAGE << std::endl;
+      continue;
     } break;
 
     case OpType::ASSIGN: {

@@ -31,7 +31,7 @@ class Polynomial {
 
     Node(T coefficient, uint32_t exponent, std::unique_ptr<Node> next)
         : coefficient(coefficient), exponent(exponent), next(std::move(next)) {}
-      
+
     Node() : coefficient(0), exponent(0), next(nullptr) {}
 
     std::unique_ptr<Node> copy() {
@@ -61,8 +61,12 @@ public:
     }
   }
 
-  Polynomial(const Polynomial &) = delete;
-  Polynomial &operator=(const Polynomial &) = delete;
+  Polynomial(const Polynomial &) : head(std::move(copy()->head)) {}
+
+  Polynomial &operator=(const Polynomial &) {
+    return std::move(*copy());
+  }
+
   Polynomial &operator=(Polynomial &&) = default;
   Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
 
@@ -88,15 +92,15 @@ public:
 
   std::unique_ptr<Polynomial> copy() const {
     Polynomial poly{std::move(head->copy())};
-    Node *cpCur = poly.head;
-    for (Node *cur = head->next; cur->next;
-         cur = cur->next, cpCur = cpCur->next) {
+    Node *cpCur = poly.head.get();
+    for (Node *cur = head->next.get(); cur->next;
+         cur = cur->next.get(), cpCur = cpCur->next.get()) {
       cpCur->next = cur->next->copy();
     }
     return std::make_unique<Polynomial>(poly);
   }
 
-  std::unique_ptr<Polynomial> operator+(Polynomial &poly) const {
+  Polynomial& operator+(Polynomial &poly) const {
     Polynomial res{std::move(head->copy())};
 
     res.head->exponent = 0;
@@ -129,26 +133,26 @@ public:
       }
     }
 
-    return std::make_unique<Polynomial>(std::move(res.head));
+    return res;
   }
 
-  std::unique_ptr<Polynomial> operator*(T scale) const {
+  Polynomial& operator*(T scale) const {
     Polynomial poly = copy();
     for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient *= scale;
     }
-    return std::make_unique<Polynomial>(poly);
+    return poly;
   }
 
-  std::unique_ptr<Polynomial> operator/(T scale) const {
+  Polynomial& operator/(T scale) const {
     Polynomial poly = copy();
     for (Node *current = poly.head->next; current; current = current->next) {
       current->coefficient /= scale;
     }
-    return std::make_unique<Polynomial>(poly);
+    poly;
   }
 
-  std::unique_ptr<Polynomial> operator-(Polynomial &poly) const {
+  Polynomial& operator-(Polynomial &poly) const {
     return operator+(poly * -1);
   }
 };

@@ -13,6 +13,6 @@ int main() {
   std::vector<std::pair<int, int>> items2;
   items2.push_back(std::pair<int, int>(2, 0));
   Polynomial<int> p2(items2);
-  std::unique_ptr<Polynomial<int>> p3 = p1 + p2;
+  Polynomial p3 = p1 + p2;
   return 0;
 }
