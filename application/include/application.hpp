@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 
+namespace app {
 template <typename T>
 class Application {
 
@@ -15,3 +16,4 @@ private:
 
   void mainLoop();
 };
+}

@@ -63,15 +63,9 @@ public:
 
   T evaluate(T x) const {
     T sum = 0;
-<<<<<<< HEAD
     Node* current = head->next.get();
     uint32_t lastExponent = current->exponent;
     for (; current; current = current->next.get(), lastExponent = current->exponent) {
-=======
-    Node *current = head->next.get();
-    uint32_t lastExponent = 0;
-    while (true) {
->>>>>>> 2c62a1f6cab288203e4710949192d5a1a68e581c
       sum *= helper::pow(x, lastExponent - current->exponent);
       sum += current->coefficient * x;
       if (current->next) {
