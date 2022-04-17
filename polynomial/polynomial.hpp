@@ -1,5 +1,8 @@
+#include <algorithm>
+#include <map>
 #include <memory>
 #include <stdint.h>
+#include <vector>
 // WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
@@ -37,6 +40,12 @@ class Polynomial {
 
 public:
   Polynomial() = delete;
+  Polynomial(std::vector<std::pair<T, T>> item) {
+    std::sort(item.begin(), item.end(),
+              [](std::pair<T, T> a, std::pair<T, T> b) {
+                return (a.first < b.first);
+              });
+  }
   Polynomial(const Polynomial &) = delete;
   Polynomial &operator=(const Polynomial &) = delete;
   Polynomial &&operator=(const Polynomial &&) = default;
