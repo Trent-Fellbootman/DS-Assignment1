@@ -1,10 +1,3 @@
-/*
- * tokens.h
- *
- *  Created on: Apr 17, 2022
- *      Author: zbc
- */
-
 #ifndef APPLICATION_INCLUDE_CONTANTS_H_
 #define APPLICATION_INCLUDE_CONTANTS_H_
 
@@ -36,6 +29,8 @@
 #define MESSAGE_TOO_MANY_ARGUMENTS "Too many arguments"
 #define MESSAGE_TOO_FEW_ARGUMENTS "Too few arguments"
 #define MESSAGE_INVALID_ARGUMENTS "Invalid argument(s)"
+#define MESSAGE_INVALID_OPERATION "Invalid operation"
+#define MESSAGE_CANNOT_DIVIDE "Division is not allowed in polynomial operations. Use multiplications only."
 
 namespace app {
 enum class OpType { ASSIGN, DISPLAY, EVALUATE, PLOT, UNKNOWN, HELP, EXIT };
@@ -53,7 +48,7 @@ enum class TokenBrace { L, R };
 #define VERTICAL_AXIS_NUMBER_WIDTH AXIS_SCALE_WIDTH
 #define HORIZONTAL_AXIS_NUMBER_WIDTH AXIS_SCALE_WIDTH
 #define GRID_INTERIM_X 20
-#define GRID_INTERIM_Y 20
+#define GRID_INTERIM_Y 5
 
 // colors
 #define SGR_FG_RED "\x1b[38;2;255;0;0m"

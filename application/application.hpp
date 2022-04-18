@@ -32,7 +32,7 @@ private:
   };
 
   std::map<std::string, poly::Polynomial<T>> polynomials;
-  Extent canvasExtent{80, 24};
+  Extent canvasExtent{10, 5};
   Logger logger;
 
   void mainLoop();
@@ -54,7 +54,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
     if (rpn[i].tp == TokenTypes::OP) {
       if (ret.size() < 1) {
         logger.setLevel(Logger::Level::ERROR);
-        logger.println("Invalid operation");
+        logger.println(MESSAGE_INVALID_OPERATION);
         logger.setLevel(Logger::Level::NORMAL);
       } else if (ret.size() == 1) {
         poly::Polynomial<T> t = ret.top();
@@ -85,7 +85,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
         } break;
         case CalcOps::DIV: {
           logger.setLevel(Logger::Level::ERROR);
-          logger.println("Not implemented");
+          logger.println(MESSAGE_CANNOT_DIVIDE);
           logger.setLevel(Logger::Level::NORMAL);
         } break;
         }
@@ -207,10 +207,7 @@ template <typename T> void Application<T>::run() {
       double arg1, arg2;
 
       try {
-        std::cout << args[1] << std::endl;
-        std::cout << args[1].length() << std::endl;
         arg1 = stod(args[1]);
-        std::cout << arg1 << std::endl;
       } catch (std::exception &e) {
         logger.setLevel(Logger::Level::ERROR);
         logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
@@ -219,18 +216,13 @@ template <typename T> void Application<T>::run() {
       }
 
       try {
-        std::cout << args[2] << std::endl;
-        std::cout << args[2].length() << std::endl;
-        arg1 = stod(args[2]);
-        std::cout << arg2 << std::endl;
+        arg2 = stod(args[2]);
       } catch (std::exception &e) {
         logger.setLevel(Logger::Level::ERROR);
         logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
         logger.setLevel(Logger::Level::NORMAL);
         continue;
       }
-
-      // std::cout << arg1 << ' ' << arg2 << std::endl;
 
       if (arg1 >= arg2) {
         logger.setLevel(Logger::Level::ERROR);
@@ -239,7 +231,7 @@ template <typename T> void Application<T>::run() {
         continue;
       }
 
-      // plot(args[0], arg1, arg2);
+      plot(args[0], arg1, arg2);
     } break;
 
     case OpType::UNKNOWN: {
@@ -251,9 +243,6 @@ template <typename T> void Application<T>::run() {
     case OpType::EXIT: {
       return;
     }
-
-    default:
-      break;
     }
   }
 }
@@ -304,7 +293,7 @@ void Application<T>::plot(std::string polyName, double start, double end) {
 
     // print dots. No value: plus; Dots on curve: asterisk
     for (double value : values) {
-      double relativeOffset = (value - baseY) / paceY;
+      double relativeOffset = (value - baseY) / paceY - i;
       if (relativeOffset >= -0.5 && relativeOffset < 0.5) {
         logger.putchar('*');
       } else {
@@ -337,6 +326,10 @@ void Application<T>::plot(std::string polyName, double start, double end) {
     } else {
       logger.putchar(' ');
     }
+  }
+
+  for (auto value : values) {
+    std::cout << value << std::endl;
   }
 }
 } // namespace app
