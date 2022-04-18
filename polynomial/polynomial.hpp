@@ -66,19 +66,27 @@ public:
   Polynomial(const Polynomial &original)
       : head(std::move(original.copy()->head)) {}
 
-  Polynomial operator=(const Polynomial &) { return std::move(*copy()); }
+  Polynomial &operator=(const Polynomial &poly) {
+    this->head = std::move(poly.head->copy());
+    Node *cpCur = poly.head.get();
+    for (Node *cur = head.get(); cpCur->next;
+         cur = cur->next.get(), cpCur = cpCur->next.get()) {
+      cur->next = cpCur->next->copy();
+    }
+    return *this;
+  }
 
   Polynomial &operator=(Polynomial &&) = default;
   Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
 
   uint32_t getLength() { return head->exponent; }
 
-  std::vector<std::pair<int, int>> dump() const {
-    std::vector<std::pair<int, int>> ret;
+  std::vector<std::pair<T, uint32_t>> dump() const {
+    std::vector<std::pair<T, uint32_t>> ret;
     for (Node *current = head.get(); current->next;
          current = current->next.get()) {
-      ret.push_back(std::pair<int, int>(current->next->coefficient,
-                                        current->next->exponent));
+      ret.push_back(std::pair<T, uint32_t>(current->next->coefficient,
+                                           current->next->exponent));
     }
     return ret;
   }
@@ -169,7 +177,11 @@ public:
     return poly;
   }
 
-  Polynomial operator-(Polynomial &poly) const { return operator+(poly * -1); }
+  Polynomial operator-(Polynomial &poly) const {
+    Polynomial t = poly * -1;
+    Polynomial p = operator+(t);
+    return p;
+  }
 
   std::string format() {
     Node *current = head->next.get();

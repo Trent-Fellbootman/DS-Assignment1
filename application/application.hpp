@@ -32,11 +32,77 @@ private:
   void plot(std::string polyName, double start, double end);
 
   std::unique_ptr<poly::Polynomial<T>> evaluateExpression(std::string expr);
+  poly::Polynomial<T>
+  calculateExpr(const std::vector<helper::Token<T>> &tokens);
+
   Extent canvasExtent{80, 24};
 };
 } // namespace app
 
 namespace app {
+template <typename T>
+poly::Polynomial<T>
+Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
+  std::stack<poly::Polynomial<T>> ret;
+  std::vector<helper::Token<T>> rpn = helper::expression2RPN(tokens);
+  for (int i = 0; i < rpn.size(); i++) {
+    if (rpn[i].tp == TokenTypes::POLY) {
+      std::vector<std::pair<T, uint32_t>> debug = rpn[i].data.polynomial.dump();
+      std::cout << "rpn dumped" << std::endl;
+    }
+  }
+  for (int i = 0; i < rpn.size(); i++) {
+    if (rpn[i].tp == TokenTypes::OP) {
+      if (ret.size() < 1) {
+        std::cout << "Invalid operation" << std::endl;
+      } else if (ret.size() == 1) {
+        poly::Polynomial<T> t = ret.top();
+        ret.pop();
+        switch (rpn[i].data.operation) {
+        case CalcOps::ADD: {
+          ret.push(t);
+        } break;
+        case CalcOps::SUB: {
+          T scale = -1;
+          ret.push(t * scale);
+        } break;
+        }
+      } else {
+        poly::Polynomial<T> v2 = ret.top();
+        ret.pop();
+        poly::Polynomial<T> v1 = ret.top();
+        ret.pop();
+        switch (rpn[i].data.operation) {
+        case CalcOps::ADD: {
+          ret.push(v1 + v2);
+        } break;
+        case CalcOps::SUB: {
+          ret.push(v1 - v2);
+        } break;
+        case CalcOps::MUL: {
+          std::cout << "Not implemented" << std::endl;
+        } break;
+        case CalcOps::DIV: {
+          std::cout << "Not implemented" << std::endl;
+        } break;
+        }
+      }
+
+    } else if (rpn[i].tp == TokenTypes::VAR) {
+      auto it = polynomials.find(rpn[i].data.variable);
+      if (it == polynomials.end()) {
+        printf("Can't find variable %s\n", rpn[i].data.variable);
+      } else {
+        ret.push(it->second);
+      }
+
+    } else if (rpn[i].tp == TokenTypes::POLY) {
+      ret.push(rpn[i].data.polynomial);
+    }
+  }
+
+  return ret.top();
+}
 template <typename T> void Application<T>::run() {
   char buffer[BUFFER_SIZE];
   while (true) {
@@ -69,10 +135,10 @@ template <typename T> void Application<T>::run() {
       std::string arg2 = args.substr(args.find_first_of(',') + 1, ' ');
       std::vector<helper::Token<T>> tokens =
           helper::expressionToTokens<T>(arg2);
-      // todo:calculation
+      poly::Polynomial<T> p = calculateExpr(tokens);
       std::cout << "token dumped" << std::endl;
-      /*polynomials.insert(std::pair<std::string, poly::Polynomial<T>>(
-          arg1, helper::parsePolynomial<T>(arg2)));*/
+
+      polynomials.insert(std::pair<std::string, poly::Polynomial<T>>(arg1, p));
     } break;
 
     case OpType::DISPLAY: {

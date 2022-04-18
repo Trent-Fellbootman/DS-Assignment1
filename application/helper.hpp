@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <set>
+#include <stack>
 
 namespace app {
 
@@ -12,6 +13,7 @@ template <typename T> struct TokenData {
   std::string variable;
   poly::Polynomial<T> polynomial;
   CalcOps operation;
+  TokenBrace brace;
 };
 
 template <typename T> struct Token {
@@ -93,6 +95,19 @@ int skipSpace(const std::string &str, int cur) {
   return i;
 }
 bool isNum(char c) { return (c >= '0' && c <= '9') || c == '.'; }
+
+int getP(CalcOps op) {
+  switch (op) {
+  case CalcOps::ADD:
+  case CalcOps::SUB:
+    return 1;
+  case CalcOps::MUL:
+  case CalcOps::DIV:
+    return 2;
+  }
+  return -1;
+}
+
 double readDouble(const std::string &str, int &p) {
   std::string buffer = "";
   for (; p < str.length(); p++) {
@@ -186,11 +201,12 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
         buffer = buffer.substr(0, buffer.find_first_of(RIGHT_BRACKET));
         TokenData<T> data;
         data.polynomial = parsePolynomial<T>(buffer);
-        std::vector<std::pair<int, int>> debug_info = data.polynomial.dump();
         Token<T> t;
         t.tp = TokenTypes::POLY;
         t.data = data;
         tokens.push_back(t);
+        std::vector<std::pair<T, uint32_t>> debug_info =
+            t.data.polynomial.dump();
         i = i + buffer.length() + 1;
         buffer = "";
       } break;
@@ -228,6 +244,15 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
         t.data = data;
         tokens.push_back(t);
       } break;
+      case LEFT_BRACE:
+      case RIGHT_BRACE: {
+        TokenData<T> data;
+        data.brace = (expr[i] == '(') ? TokenBrace::L : TokenBrace::R;
+        Token<T> t;
+        t.tp = TokenTypes::BRACE;
+        t.data = data;
+        tokens.push_back(t);
+      } break;
       }
     }
   }
@@ -242,6 +267,66 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
   }
 
   return tokens;
+} // namespace helper
+
+template <typename T>
+std::vector<helper::Token<T>>
+expression2RPN(const std::vector<helper::Token<T>> &tokens) {
+  std::stack<helper::Token<T>> ts_s;
+  std::vector<helper::Token<T>> rpn;
+  for (int i = 0; i < tokens.size(); i++) {
+    switch (tokens[i].tp) {
+    case TokenTypes::BRACE: {
+      if (tokens[i].data.brace == TokenBrace::R) {
+        bool flag = false;
+        while (!ts_s.empty()) {
+          Token<T> &token = ts_s.top();
+          if (token.tp == TokenTypes::BRACE) {
+            flag = true;
+            ts_s.pop();
+            break;
+          }
+          rpn.push_back(ts_s.top());
+          ts_s.pop();
+        }
+        if (!flag) {
+          printf("Invalid expression ( brace inconsistent)");
+        }
+      } else {
+        ts_s.push(tokens[i]);
+      }
+    } break;
+    case TokenTypes::POLY: {
+      std::vector<std::pair<T, uint32_t>> debug =
+          tokens[i].data.polynomial.dump();
+    }
+    case TokenTypes::VAR: {
+      rpn.push_back(tokens[i]);
+      break;
+    }
+    case TokenTypes::OP: {
+      int cp = getP(tokens[i].data.operation);
+      while (!ts_s.empty()) {
+        Token<T> &token = ts_s.top();
+        if (token.tp == TokenTypes::OP) {
+          if (getP(token.data.operation) < cp) {
+            break;
+          }
+          rpn.push_back(ts_s.top());
+          ts_s.pop();
+        } else {
+          break;
+        }
+      }
+      ts_s.push(tokens[i]);
+    } break;
+    }
+  }
+  while (!ts_s.empty()) {
+    rpn.push_back(ts_s.top());
+    ts_s.pop();
+  }
+  return rpn;
 }
 
 } // namespace helper
