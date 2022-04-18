@@ -194,13 +194,26 @@ public:
     return p;
   }
 
+  std::string formatItem(T coefficient, uint32_t exponent) {
+    std::stringstream stream;
+    if (coefficient != 1 || exponent == 0) {
+      stream << coefficient;
+    }
+    if (exponent == 1) {
+      stream << "x";
+    } else if (exponent > 1) {
+      stream << "x^" << exponent;
+    }
+    return stream.str();
+  }
+
   std::string format() {
     Node *current = head->next.get();
     std::stringstream stream;
-    stream << current->coefficient << "x^" << current->exponent;
+    stream << formatItem(current->coefficient, current->exponent);
     while (current->next) {
       current = current->next.get();
-      stream << " + " << current->coefficient << "x^" << current->exponent;
+      stream << " + " << formatItem(current->coefficient, current->exponent);
     }
     return stream.str();
   }
