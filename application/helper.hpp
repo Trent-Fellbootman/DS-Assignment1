@@ -165,8 +165,6 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
         t.tp = TokenTypes::POLY;
         t.data = data;
         tokens.push_back(t);
-        std::vector<std::pair<T, uint32_t>> debug_info =
-            t.data.polynomial.dump();
         i = i + buffer.length() + 1;
         buffer = "";
       } break;
