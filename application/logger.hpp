@@ -59,10 +59,10 @@ public:
         std::cout << SGR_normal << str << SGR_normal;
         break;
       case Level::WARNING:
-        std::cout << SGR_warning << str << SGR_normal;
+        std::cout << SGR_warning << LOGGER_PREFIX_WARNING << str << SGR_normal;
         break;
       case Level::ERROR:
-        std::cout << SGR_error << str << SGR_normal;
+        std::cout << SGR_error << LOGGER_PREFIX_ERROR << str << SGR_normal;
         break;
     }
   }
