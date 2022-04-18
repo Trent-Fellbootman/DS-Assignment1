@@ -11,7 +11,7 @@ namespace app {
 class Logger {
 private:
   uint32_t currentIndent;
-  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info;
+  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info, SGR_output;
   bool indented;
   std::ostream &stream;
 
@@ -68,7 +68,7 @@ public:
     // set color
     switch (level) {
     case Level::NORMAL:
-      SGR_current = &SGR_normal;
+      SGR_current = &SGR_output;
       break;
 
     case Level::WARNING:
@@ -92,7 +92,7 @@ public:
   Logger(std::ostream *stream = &std::cout)
       : stream(*stream), currentIndent(0), indented(false), level(Level::NORMAL),
         SGR_normal(SGR_FG_GREY), SGR_warning(SGR_FG_YELLOW),
-        SGR_error(SGR_FG_RED), SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE) {
+        SGR_error(SGR_FG_RED), SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE), SGR_output(SGR_FG_GREEN) {
     setLevel(level);
   }
 

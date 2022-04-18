@@ -115,7 +115,7 @@ template <typename T> void Application<T>::run() {
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
         std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
-          logger.setLevel(Logger::Level::ERROR);
+      logger.setLevel(Logger::Level::ERROR);
       logger.printString(INVALID_COMMAND_MESSAGE);
       logger.setLevel(Logger::Level::NORMAL);
       logger.endLine();
@@ -153,10 +153,10 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::DISPLAY: {
-      logger.println("Found " + std::to_string(polynomials.size()) + " polynomials:");
+      logger.println("Found " + std::to_string(polynomials.size()) +
+                     " polynomial(s):");
       for (auto &pair : polynomials) {
-        logger.println(pair.first + "(x) = " +
-               pair.second.format());
+        logger.println(pair.first + "(x) = " + pair.second.format());
       }
     } break;
 
@@ -169,16 +169,20 @@ template <typename T> void Application<T>::run() {
           helper::strip(args.substr(0, args.find_first_of(',')), ' ');
       std::string arg2 = args.substr(args.find_first_of(',') + 1, ' ');
       if (polynomials.find(arg1) != polynomials.end()) {
-        logger.println(std::to_string(polynomials.find(arg1)->second.evaluate(atof(arg2.c_str()))));
+        logger.println(std::to_string(
+            polynomials.find(arg1)->second.evaluate(atof(arg2.c_str()))));
       } else {
         logger.setLevel(Logger::Level::ERROR);
-        logger.println("Can't find polynomials named " + arg1);
+        logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + arg1);
         logger.setLevel(Logger::Level::NORMAL);
       }
     } break;
 
     case OpType::PLOT: {
-
+      size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
+      size_t argsEnd = input.find_last_of(RIGHT_BRACE);
+      std::string rawArgs = input.substr(argsStart, argsEnd - argsStart);
+      
     } break;
 
     case OpType::UNKNOWN: {

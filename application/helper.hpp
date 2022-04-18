@@ -4,6 +4,8 @@
 #include <iostream>
 #include <set>
 #include <stack>
+#include <string>
+#include <vector>
 
 namespace app {
 
@@ -288,6 +290,28 @@ void repeatPrint(int count, char ch) {
   for (int i = 0; i < count; i++) {
     std::cout << ch;
   }
+}
+
+std::vector<std::string> separate(std::string str, char delimiter) {
+  std::vector<std::string> res;
+  size_t lastIndex = -1;
+  while (true) {
+    size_t newIndex = str.find_first_of(delimiter, lastIndex + 1);
+    if (newIndex != std::string::npos) {
+      if (newIndex - lastIndex > 1) {
+        res.push_back(str.substr(lastIndex + 1, newIndex - lastIndex - 1));
+      }
+      lastIndex = newIndex;
+    } else {
+      break;
+    }
+  }
+
+  if (lastIndex < str.size() - 1) {
+    res.push_back(str.substr(lastIndex + 1, str.size() - lastIndex - 1));
+  }
+  
+  return std::move(res);
 }
 
 } // namespace helper

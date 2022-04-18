@@ -29,6 +29,7 @@
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
 #define HELPER_MESSAGE "TODO"
 #define UNKNOWN_OP_MESSAGE "TODO"
+#define MESSAGE_PREFIX_POLY_NOT_FOUND "Can't find polynomial named "
 
 namespace app {
 enum class OpType { ASSIGN, DISPLAY, EVALUATE, PLOT, UNKNOWN, HELP, EXIT };
