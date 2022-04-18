@@ -186,16 +186,16 @@ enum class TokenBrace { L, R };
 #define GRID_INTERIM_Y 5
 
 // colors
-#define SGR_FG_RED "\e[38;2;200;0;0m"
-#define SGR_FG_GREEN "\e[38;2;0;200;0m"
-#define SGR_FG_BLUE "\e[38;2;0;0;200m"
-#define SGR_FG_YELLOW "\e[38;2;200;200;0m"
-#define SGR_FG_WHITE "\e[38;2;255;255;255m"
-#define SGR_FG_GREY "\e[38;2;200;200;200m"
+#define SGR_FG_RED "\033[38;2;200;0;0m"
+#define SGR_FG_GREEN "\033[38;2;0;200;0m"
+#define SGR_FG_BLUE "\033[38;2;0;0;200m"
+#define SGR_FG_YELLOW "\033[38;2;200;200;0m"
+#define SGR_FG_WHITE "\033[38;2;255;255;255m"
+#define SGR_FG_GREY "\033[38;2;200;200;200m"
 
 // ANSI Operators
-#define ANSI_BACKSPACE "\e[1D"
-#define ANSI_CLEAR_CONSOLE "\e[2J"
+#define ANSI_BACKSPACE "\033[1D"
+#define ANSI_CLEAR_CONSOLE "\033[2J"
 #define ANSI_RESTORE_CONSOLE "\33[0m"
 
 // Logger

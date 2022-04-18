@@ -433,7 +433,7 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        plotColor = "\e[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+        plotColor = "\033[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
                     std::to_string(newColor.rgb[1]) + ";" +
                     std::to_string(newColor.rgb[2]) + "m";
       } else if (args[0] == PROPERTY_OUTPUT_COLOR) {
@@ -462,7 +462,7 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_output("\e[38;2;" + std::to_string(newColor.rgb[0]) +
+        logger.setSGR_output("\033[38;2;" + std::to_string(newColor.rgb[0]) +
                              ";" + std::to_string(newColor.rgb[1]) + ";" +
                              std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == PROPERTY_INPUT_COLOR) {
@@ -491,7 +491,7 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_input("\e[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+        logger.setSGR_input("\033[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
                             std::to_string(newColor.rgb[1]) + ";" +
                             std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {
