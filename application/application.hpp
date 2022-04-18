@@ -1,7 +1,7 @@
 #include "constants.h"
 #include "helper.hpp"
-#include "polynomial.hpp"
 #include "logger.hpp"
+#include "polynomial.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -40,7 +40,6 @@ private:
   std::unique_ptr<poly::Polynomial<T>> evaluateExpression(std::string expr);
   poly::Polynomial<T>
   calculateExpr(const std::vector<helper::Token<T>> &tokens);
-
 };
 } // namespace app
 
