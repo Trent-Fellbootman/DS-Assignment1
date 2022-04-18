@@ -32,9 +32,10 @@
 
 namespace app {
 enum class OpType { ASSIGN, DISPLAY, EVALUATE, PLOT, UNKNOWN, HELP, EXIT };
-enum class TokenTypes { VAR, POLY, OP };
+enum class TokenTypes { VAR, POLY, OP, BRACE };
 
 enum class CalcOps { ADD, SUB, MUL, DIV };
+enum class TokenBrace { L, R };
 
 } // namespace app
 
