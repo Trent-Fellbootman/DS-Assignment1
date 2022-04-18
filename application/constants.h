@@ -66,3 +66,6 @@ enum class TokenBrace { L, R };
 #define LOGGER_PREFIX_ERROR "[ERROR] "
 #define LOGGER_PREFIX_DEBUG "[DEBUG] "
 #define LOGGER_PREFIX_INFO "[INFO] "
+
+// math
+#define EPSILON 1e-10

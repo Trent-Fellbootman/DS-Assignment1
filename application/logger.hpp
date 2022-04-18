@@ -11,7 +11,8 @@ namespace app {
 class Logger {
 private:
   uint32_t currentIndent;
-  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info, SGR_output;
+  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info,
+      SGR_output;
   bool indented;
   std::ostream &stream;
 
@@ -90,9 +91,11 @@ public:
   }
 
   Logger(std::ostream *stream = &std::cout)
-      : stream(*stream), currentIndent(0), indented(false), level(Level::NORMAL),
-        SGR_normal(SGR_FG_GREY), SGR_warning(SGR_FG_YELLOW),
-        SGR_error(SGR_FG_RED), SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE), SGR_output(SGR_FG_GREEN) {
+      : stream(*stream), currentIndent(0), indented(false),
+        level(Level::NORMAL), SGR_normal(SGR_FG_GREY),
+        SGR_warning(SGR_FG_YELLOW), SGR_error(SGR_FG_RED),
+        SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE),
+        SGR_output(SGR_FG_GREEN) {
     setLevel(level);
   }
 
@@ -100,14 +103,21 @@ public:
     stream << *SGR_current;
     checkIndent();
     std::string str = std::to_string(number);
+    // std::cout << str << std::endl;
 
     switch (format.alignment) {
     case Alignment::LEFT:
-      stream << std::ios::left << std::setw(format.width) << str;
+      stream << str;
+      for (int i = 0; i < format.width - str.length(); i++) {
+        stream << WHITE_SPACE;
+      }
       break;
 
     case Alignment::RIGHT:
-      stream << std::ios::right << std::setw(format.width) << str;
+      for (int i = 0; i < format.width - str.length(); i++) {
+        stream << WHITE_SPACE;
+      }
+      stream << str;
       break;
 
     case Alignment::CENTER:
@@ -115,7 +125,10 @@ public:
       for (int i = 0; i < padding; i++) {
         stream << WHITE_SPACE;
       }
-      stream << std::setw(format.width - padding) << str;
+      stream << str;
+      for (int i = 0; i < format.width - padding - str.length(); i++) {
+        stream << WHITE_SPACE;
+      }
       break;
     }
     stream << SGR_normal;

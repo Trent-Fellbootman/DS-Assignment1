@@ -32,7 +32,7 @@ private:
   };
 
   std::map<std::string, poly::Polynomial<T>> polynomials;
-  Extent canvasExtent{10, 5};
+  Extent canvasExtent{80, 24};
   Logger logger;
 
   void mainLoop();
@@ -266,12 +266,14 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   std::vector<double> values(canvasExtent.width);
   double paceX = (end - start) / (canvasExtent.width - 1);
   for (int i = 0; i < canvasExtent.width; i++) {
-    values.push_back(polynomial.evaluate(start + paceX * i));
+    values[i] = (polynomial.evaluate(start + paceX * i));
   }
 
   double baseX = start, baseY = *std::min_element(values.begin(), values.end());
+  baseY -= EPSILON;
   double rangeX = end - start,
          rangeY = *std::max_element(values.begin(), values.end()) - baseY;
+  rangeY += EPSILON;
   double paceY = rangeY / (canvasExtent.height - 1);
 
   // print y label
@@ -283,8 +285,8 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   for (int i = canvasExtent.height; i > -1; i--) {
     // print vertical axis and occasionally scale
     if (i % GRID_INTERIM_Y == 0) {
-      logger.printNumber(
-          i * paceY, {Logger::Alignment::RIGHT, VERTICAL_AXIS_NUMBER_WIDTH});
+      logger.printNumber(baseY + i * paceY, {Logger::Alignment::RIGHT,
+                                             VERTICAL_AXIS_NUMBER_WIDTH});
       logger.printString("-|");
     } else {
       logger.pad(VERTICAL_AXIS_NUMBER_WIDTH);
@@ -297,7 +299,7 @@ void Application<T>::plot(std::string polyName, double start, double end) {
       if (relativeOffset >= -0.5 && relativeOffset < 0.5) {
         logger.putchar('*');
       } else {
-        logger.putchar('+');
+        logger.putchar(WHITE_SPACE);
       }
     }
     logger.endLine();
@@ -315,21 +317,17 @@ void Application<T>::plot(std::string polyName, double start, double end) {
     logger.pad(GRID_INTERIM_X - 1);
     logger.printString("|");
   }
+  logger.endLine();
 
   // print scale
   logger.pad(VERTICAL_AXIS_NUMBER_WIDTH + 2);
-  for (int i = 0; i < canvasExtent.width; i++) {
-    if ((i + HORIZONTAL_AXIS_NUMBER_WIDTH / 2) % GRID_INTERIM_X ==
-        GRID_INTERIM_X - 1) {
-      logger.printNumber(start + i * paceX, {Logger::Alignment::CENTER,
-                                             HORIZONTAL_AXIS_NUMBER_WIDTH});
-    } else {
-      logger.putchar(' ');
-    }
+  logger.pad(HORIZONTAL_AXIS_NUMBER_WIDTH / 2);
+  for (int i = 0; i < canvasExtent.width / GRID_INTERIM_X; i++) {
+    logger.pad(GRID_INTERIM_X - HORIZONTAL_AXIS_NUMBER_WIDTH);
+    logger.printNumber(
+        baseX + ((i + 1) * GRID_INTERIM_X - 1) * paceX,
+        {Logger::Alignment::CENTER, HORIZONTAL_AXIS_NUMBER_WIDTH});
   }
-
-  for (auto value : values) {
-    std::cout << value << std::endl;
-  }
+  logger.endLine();
 }
 } // namespace app
