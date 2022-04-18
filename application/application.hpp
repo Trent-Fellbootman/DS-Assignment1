@@ -1,9 +1,11 @@
 #include "constants.h"
 #include "helper.hpp"
 #include "polynomial.hpp"
+#include <iomanip>
 #include <iostream>
 #include <map>
 #include <memory>
+#include <numeric>
 #include <set>
 #include <sstream>
 #include <stdio.h>
@@ -185,7 +187,52 @@ template <typename T> void Application<T>::run() {
 
 template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
+  if (polynomials.find(polyName) == polynomials.end()) {
+    printf(POLYNOMIAL_NOT_FOUND_MESSAGE, polyName);
+    std::cout << std::endl;
+  }
+
   std::vector<double> values(canvasExtent.width);
-  double pace = canvasExtent.width / (canvasExtent.width - 1);
+  double paceX = (end - start) / (canvasExtent.width - 1);
+  for (int i = 0; i < canvasExtent.width; i++) {
+    values.push_back(polynomials[polyName].evaluate(start + paceX * i));
+  }
+
+  double baseX = start, baseY = std::min(values);
+  double rangeX = end - start, rangeY = std::max(values) - baseY;
+  double paceY = rangeY / (canvasExtent.height - 1);
+
+  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH - 1, ' ');
+
+  std::cout << "y^" << std::endl;
+
+  for (int i = canvasExtent.height; i > -1; i--) {
+    // print vertical axis and occasionally scale
+    if (i % GRID_INTERIM_Y == 0) {
+      std::cout << std::ios::left << std::setw(VERTICAL_AXIS_NUMBER_WIDTH)
+                << i * paceY << '|';
+    } else {
+      helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
+      std::cout << '|';
+    }
+
+    // print dots. No value: plus; Dots on curve: asterisk
+    for (double value : values) {
+      double relativeOffset = (value - baseY) / paceY;
+      if (relativeOffset >= -0.5 && relativeOffset < 0.5) {
+        std::cout << '*';
+      } else {
+        std::cout << '+';
+      }
+    }
+  }
+
+  // print horizontal axis
+  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH + 1, ' ');
+  helper::repeatPrint(canvasExtent.width, '-');
+  std::cout << ">x" << std::endl;
+
+  // occasionally print scale
+  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH)
 }
 } // namespace app

@@ -322,6 +322,12 @@ expression2RPN(const std::vector<helper::Token<T>> &tokens) {
   return rpn;
 }
 
+void repeatPrint(int count, char ch) {
+  for (int i = 0; i < count; i++) {
+    std::cout << ch;
+  }
+}
+
 } // namespace helper
 
 } // namespace app
