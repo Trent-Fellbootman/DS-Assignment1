@@ -3,10 +3,19 @@
 #include <map>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #pragma once
 namespace poly {
+
+class polynomial_multiplication_not_implimented : public std::exception {
+public:
+  const char *what() const noexcept override final {
+    return "Polynomial multiplication is not yet implemented";
+  }
+};
+
 namespace helper {
 template <typename T> T pow(T x, uint32_t exp) {
   T ans = 1;
@@ -207,14 +216,13 @@ public:
     return poly;
   }
 
-  Polynomial operator*(const Polynomial &poly) const {
+  Polynomial operator*(const Polynomial &poly) const noexcept(false) {
     if (this->head->exponent == 1 && this->head->next->exponent == 0) {
       return poly * (*this);
     } else if (poly.head->exponent == 1 && poly.head->next->exponent == 0) {
       return (*this) * poly.head->next->coefficient;
     } else {
-      // todo:
-      printf("Not implemented\n");
+      throw polynomial_multiplication_not_implimented();
     }
 
     if (poly.head->exponent == 0) {
