@@ -52,7 +52,9 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
   for (int i = 0; i < rpn.size(); i++) {
     if (rpn[i].tp == TokenTypes::OP) {
       if (ret.size() < 1) {
-        std::cout << "Invalid operation" << std::endl;
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println("Invalid operation");
+        logger.setLevel(Logger::Level::NORMAL);
       } else if (ret.size() == 1) {
         poly::Polynomial<T> t = ret.top();
         ret.pop();
@@ -81,7 +83,9 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
           ret.push(v1 * v2);
         } break;
         case CalcOps::DIV: {
-          std::cout << "Not implemented" << std::endl;
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println("Not implemented");
+          logger.setLevel(Logger::Level::NORMAL);
         } break;
         }
       }
@@ -89,7 +93,9 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
     } else if (rpn[i].tp == TokenTypes::VAR) {
       auto it = polynomials.find(rpn[i].data.variable);
       if (it == polynomials.end()) {
-        printf("Can't find variable %s\n", rpn[i].data.variable.c_str());
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println("Can't find variable " + rpn[i].data.variable);
+        logger.setLevel(Logger::Level::NORMAL);
       } else {
         ret.push(it->second);
       }
@@ -109,7 +115,9 @@ template <typename T> void Application<T>::run() {
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
         std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
+          logger.setLevel(Logger::Level::ERROR);
       logger.printString(INVALID_COMMAND_MESSAGE);
+      logger.setLevel(Logger::Level::NORMAL);
       logger.endLine();
       continue;
     }
@@ -120,7 +128,7 @@ template <typename T> void Application<T>::run() {
 
     switch (operation) {
     case OpType::HELP: {
-      std::cout << HELPER_MESSAGE << std::endl;
+      logger.println(HELPER_MESSAGE);
       continue;
     } break;
 
@@ -145,10 +153,10 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::DISPLAY: {
-      printf("Found %d polynomials:\n", static_cast<int>(polynomials.size()));
+      logger.println("Found " + std::to_string(polynomials.size()) + " polynomials:");
       for (auto &pair : polynomials) {
-        printf("%s(x) = %s\n", pair.first.c_str(),
-               pair.second.format().c_str());
+        logger.println(pair.first + "(x) = " +
+               pair.second.format());
       }
     } break;
 
@@ -161,10 +169,11 @@ template <typename T> void Application<T>::run() {
           helper::strip(args.substr(0, args.find_first_of(',')), ' ');
       std::string arg2 = args.substr(args.find_first_of(',') + 1, ' ');
       if (polynomials.find(arg1) != polynomials.end()) {
-        std::cout << polynomials.find(arg1)->second.evaluate(atof(arg2.c_str()))
-                  << std::endl;
+        logger.println(std::to_string(polynomials.find(arg1)->second.evaluate(atof(arg2.c_str()))));
       } else {
-        printf("Can't find polynomials named %s", arg1.c_str());
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println("Can't find polynomials named " + arg1);
+        logger.setLevel(Logger::Level::NORMAL);
       }
     } break;
 
@@ -173,7 +182,9 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::UNKNOWN: {
-      std::cout << UNKNOWN_OP_MESSAGE;
+      logger.setLevel(Logger::Level::ERROR);
+      logger.println(UNKNOWN_OP_MESSAGE);
+      logger.setLevel(Logger::Level::NORMAL);
     } break;
 
     case OpType::EXIT: {
@@ -190,14 +201,22 @@ template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
   // handle exceptions
   if (polynomials.find(polyName) == polynomials.end()) {
+    logger.setLevel(Logger::Level::ERROR);
     logger.println(POLYNOMIAL_NOT_FOUND_MESSAGE);
+    logger.setLevel(Logger::Level::NORMAL);
   }
+
+  poly::Polynomial<T> &polynomial = polynomials[polyName];
+
+  logger.println("Plotting: " + polyName + "(x) = " + polynomial.format());
+  logger.println("From " + std::to_string(start) + " to " +
+                 std::to_string(end));
 
   // calculate values
   std::vector<double> values(canvasExtent.width);
   double paceX = (end - start) / (canvasExtent.width - 1);
   for (int i = 0; i < canvasExtent.width; i++) {
-    values.push_back(polynomials[polyName].evaluate(start + paceX * i));
+    values.push_back(polynomial.evaluate(start + paceX * i));
   }
 
   double baseX = start, baseY = *std::min_element(values.begin(), values.end());

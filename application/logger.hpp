@@ -1,29 +1,27 @@
 #include "constants.h"
 #include <cassert>
 #include <iomanip>
+#include <iostream>
 #include <ostream>
 #include <stdint.h>
 #include <string>
-#include <iostream>
 // only one warning/error is allowed per line
 
 namespace app {
 class Logger {
 private:
-  uint32_t currentIndent = 0;
-  std::string SGR_normal = SGR_FG_GREY, SGR_warning = SGR_FG_YELLOW,
-              SGR_error = SGR_FG_RED, SGR_debug = SGR_FG_GREEN,
-              SGR_info = SGR_FG_WHITE;
-  bool indented = false;
-  std::ostream& stream;
+  uint32_t currentIndent;
+  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info;
+  bool indented;
+  std::ostream &stream;
 
 public:
   enum class Alignment { LEFT, RIGHT, CENTER };
   enum class Level { NORMAL, WARNING, ERROR, DEBUG, INFO };
 
 private:
-  Level level = Level::NORMAL;
-  std::string *SGR_current = &SGR_normal;
+  Level level;
+  std::string *SGR_current;
 
   void checkIndent() {
     if (!indented) {
@@ -59,8 +57,6 @@ public:
     uint32_t width;
   };
 
-  Logger(std::ostream* stream = &std::cout) : stream(*stream) {}
-
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
 
@@ -73,32 +69,35 @@ public:
     switch (level) {
     case Level::NORMAL:
       SGR_current = &SGR_normal;
-      stream << SGR_current;
       break;
-      
+
     case Level::WARNING:
       SGR_current = &SGR_warning;
-      stream << SGR_current;
       break;
-      
+
     case Level::ERROR:
       SGR_current = &SGR_error;
-      stream << SGR_current;
       break;
-      
+
     case Level::DEBUG:
       SGR_current = &SGR_debug;
-      stream << SGR_current;
       break;
-      
+
     case Level::INFO:
       SGR_current = &SGR_info;
-      stream << SGR_current;
       break;
     }
   }
 
+  Logger(std::ostream *stream = &std::cout)
+      : stream(*stream), currentIndent(0), indented(false), level(Level::NORMAL),
+        SGR_normal(SGR_FG_GREY), SGR_warning(SGR_FG_YELLOW),
+        SGR_error(SGR_FG_RED), SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE) {
+    setLevel(level);
+  }
+
   template <typename T> void printNumber(T number, Format format) {
+    stream << *SGR_current;
     checkIndent();
     std::string str = std::to_string(number);
 
@@ -119,33 +118,44 @@ public:
       stream << std::setw(format.width - padding) << str;
       break;
     }
+    stream << SGR_normal;
   }
 
   void printString(const std::string &str) {
+    stream << *SGR_current;
     checkIndent();
     stream << str;
+    stream << SGR_normal;
+  }
+
+  void endLine() {
+    stream << std::endl;
+    indented = false;
   }
 
   void println(const std::string &str) {
+    stream << *SGR_current;
     printString(str);
     endLine();
+    stream << SGR_normal;
   }
 
   void putchar(char ch, std::string SGR_color = "") {
+    stream << *SGR_current;
     checkIndent();
     if (SGR_color != "") {
       stream << SGR_color;
     }
-    stream << ch << SGR_current;
+    stream << ch << SGR_normal;
   }
 
-  void endLine() { stream << std::endl; }
-
   void pad(uint32_t length, char ch = WHITE_SPACE) {
+    stream << *SGR_current;
     checkIndent();
     for (int i = 0; i < length; i++) {
       stream << ch;
     }
+    stream << SGR_normal;
   }
 };
 } // namespace app

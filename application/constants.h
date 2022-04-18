@@ -54,7 +54,7 @@ enum class TokenBrace { L, R };
 #define SGR_FG_BLUE "\x1b[38;2;0;0;255m"
 #define SGR_FG_YELLOW "\x1b[38;2;255;255;0m"
 #define SGR_FG_WHITE "\x1b[38;2;255;255;255m"
-#define SGR_FG_GREY "\x1b[200;200;200m"
+#define SGR_FG_GREY "\x1b[38;2;200;200;200m"
 
 // ANSI Operators
 #define ANSI_BACKSPACE "\x1b[1D"
