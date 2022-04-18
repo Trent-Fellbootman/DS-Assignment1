@@ -365,9 +365,9 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
-                    std::to_string(newColor.rgb[1]) + ";" +
-                    std::to_string(newColor.rgb[2]) + "m");
+        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) +
+                             ";" + std::to_string(newColor.rgb[1]) + ";" +
+                             std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {
         if (args.size() < 2) {
           logger.setLevel(Logger::Level::ERROR);
@@ -407,6 +407,14 @@ template <typename T> void Application<T>::run() {
         logger.println(MESSAGE_PREFIX_UNKNOWN_PROPERTY + args[0]);
         logger.setLevel(Logger::Level::NORMAL);
       }
+    } break;
+
+    case OpType::CLEAR_VARIABLES: {
+      polynomials.clear();
+    } break;
+
+    case OpType::CLEAR_CONSOLE: {
+      logger.clear();
     } break;
 
     case OpType::EXIT: {

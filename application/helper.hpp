@@ -41,6 +41,10 @@ OpType stringToOpType(char *buffer, int length) {
     res = OpType::EXIT;
   } else if (strcmp(buffer, OP_SET_PROPERTY) == 0) {
     res = OpType::SET_PROPERTY;
+  } else if (strcmp(buffer, OP_CLEAR_VARIABLES) == 0) {
+    res = OpType::CLEAR_VARIABLES;
+  } else if (strcmp(buffer, OP_CLEAR_CONSOLE) == 0) {
+    res = OpType::CLEAR_CONSOLE;
   } else {
     res = OpType::UNKNOWN;
   }

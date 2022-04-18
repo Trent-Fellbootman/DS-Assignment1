@@ -22,6 +22,8 @@
 #define OP_HELP "help"
 #define OP_EXIT "exit"
 #define OP_SET_PROPERTY "set"
+#define OP_CLEAR_VARIABLES "clear"
+#define OP_CLEAR_CONSOLE "clc"
 
 #define MIN_CANVAS_WIDTH 5
 #define MIN_CANVAS_HEIGHT 5
@@ -56,7 +58,9 @@ enum class OpType {
   UNKNOWN,
   HELP,
   EXIT,
-  SET_PROPERTY
+  SET_PROPERTY,
+  CLEAR_VARIABLES,
+  CLEAR_CONSOLE
 };
 
 struct Color {
@@ -93,6 +97,7 @@ enum class TokenBrace { L, R };
 
 // ANSI Operators
 #define ANSI_BACKSPACE "\x1b[1D"
+#define ANSI_CLEAR_CONSOLE "\x1b[2J"
 
 // Logger
 #define LOGGER_PREFIX_WARNING "[WARNING] "

@@ -62,6 +62,13 @@ public:
     }
   }
 
+  static Polynomial zero() {
+    Polynomial poly;
+    poly.head = std::make_unique<Node>(0, 1, nullptr);
+    poly.head->next = std::make_unique<Node>(0, 0, nullptr);
+    return std::move(poly);
+  }
+
   Polynomial(const Polynomial &original)
       : head(std::move(original.copy()->head)) {}
 
@@ -125,21 +132,26 @@ public:
     // assume that all polynomials will not be null
     Node *cur = res.head.get(), *cur1 = head->next.get(),
          *cur2 = poly.head->next.get();
-    for (; cur1 && cur2; res.head->exponent++) {
+    for (; cur1 && cur2;) {
       if (cur1->exponent < cur2->exponent) {
         cur->next = cur2->copy();
         cur2 = cur2->next.get();
         cur = cur->next.get();
+        res.head->exponent++;
       } else if (cur1->exponent > cur2->exponent) {
         cur->next = cur1->copy();
         cur1 = cur1->next.get();
         cur = cur->next.get();
+        res.head->exponent++;
       } else {
-        cur->next = std::make_unique<Node>(
-            cur1->coefficient + cur2->coefficient, cur1->exponent, nullptr);
-        cur1 = cur1->next.get();
-        cur2 = cur2->next.get();
-        cur = cur->next.get();
+        if (cur1->coefficient + cur2->coefficient != 0) {
+          cur->next = std::make_unique<Node>(
+              cur1->coefficient + cur2->coefficient, cur1->exponent, nullptr);
+          cur1 = cur1->next.get();
+          cur2 = cur2->next.get();
+          cur = cur->next.get();
+          res.head->exponent++;
+        }
       }
     }
 
@@ -151,10 +163,19 @@ public:
       }
     }
 
+    if (res.head->exponent == 0) {
+      res.head->next = std::make_unique<Node>(0, 0, nullptr);
+      res.head->exponent++;
+    }
+
     return res;
   }
 
   Polynomial operator*(T scale) const {
+    if (scale == 0) {
+      return zero();
+    }
+
     Polynomial poly{std::move(head->copy())};
     Node *cpCur = poly.head.get();
     for (Node *cur = head.get(); cur->next;
@@ -162,6 +183,11 @@ public:
       cpCur->next = cur->next->copy();
       cpCur->next->coefficient *= scale;
     }
+
+    if (poly.head->exponent == 0) {
+      return zero();
+    }
+
     return poly;
   }
 
@@ -173,6 +199,11 @@ public:
       cpCur->next = cur->next->copy();
       cpCur->next->coefficient /= scale;
     }
+
+    if (poly.head->exponent == 0) {
+      return zero();
+    }
+
     return poly;
   }
 
@@ -185,12 +216,22 @@ public:
       // todo:
       printf("Not implemented\n");
     }
+
+    if (poly.head->exponent == 0) {
+      return zero();
+    }
+
     return poly;
   }
 
   Polynomial operator-(Polynomial &poly) const {
     Polynomial t = poly * -1;
     Polynomial p = operator+(t);
+
+    if (p.head->next == 0) {
+      return zero();
+    }
+
     return p;
   }
 

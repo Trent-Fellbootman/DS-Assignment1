@@ -15,6 +15,7 @@ private:
       SGR_output;
   bool indented;
   std::ostream &stream;
+  int lineCount = 0;
 
 public:
   enum class Alignment { LEFT, RIGHT, CENTER };
@@ -148,6 +149,7 @@ public:
   void endLine() {
     stream << std::endl;
     indented = false;
+    lineCount++;
   }
 
   void println(const std::string &str) {
@@ -173,6 +175,10 @@ public:
       stream << ch;
     }
     stream << SGR_normal;
+  }
+
+  void clear() {
+    stream << ANSI_CLEAR_CONSOLE;
   }
 };
 } // namespace app
