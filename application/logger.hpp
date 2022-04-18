@@ -1,19 +1,21 @@
 #include "constants.h"
 #include <cassert>
 #include <iomanip>
-#include <iostream>
+#include <ostream>
 #include <stdint.h>
 #include <string>
+#include <iostream>
 // only one warning/error is allowed per line
 
 namespace app {
 class Logger {
 private:
-  uint32_t currentIndent;
+  uint32_t currentIndent = 0;
   std::string SGR_normal = SGR_FG_GREY, SGR_warning = SGR_FG_YELLOW,
               SGR_error = SGR_FG_RED, SGR_debug = SGR_FG_GREEN,
               SGR_info = SGR_FG_WHITE;
   bool indented = false;
+  std::ostream& stream;
 
 public:
   enum class Alignment { LEFT, RIGHT, CENTER };
@@ -27,23 +29,23 @@ private:
     if (!indented) {
       // pad
       for (int i = 0; i < currentIndent; i++) {
-        std::cout << WHITE_SPACE;
+        stream << WHITE_SPACE;
       }
 
       // check level
       switch (level) {
       case Level::WARNING:
-        std::cout << LOGGER_PREFIX_WARNING;
+        stream << LOGGER_PREFIX_WARNING;
         break;
 
       case Level::ERROR:
-        std::cout << LOGGER_PREFIX_ERROR;
+        stream << LOGGER_PREFIX_ERROR;
         break;
       case Level::DEBUG:
-        std::cout << LOGGER_PREFIX_DEBUG;
+        stream << LOGGER_PREFIX_DEBUG;
         break;
       case Level::INFO:
-        std::cout << LOGGER_PREFIX_INFO;
+        stream << LOGGER_PREFIX_INFO;
         break;
       }
 
@@ -57,7 +59,7 @@ public:
     uint32_t width;
   };
 
-  Logger() : currentIndent(0) {}
+  Logger(std::ostream* stream = &std::cout) : stream(*stream) {}
 
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
@@ -71,27 +73,27 @@ public:
     switch (level) {
     case Level::NORMAL:
       SGR_current = &SGR_normal;
-      std::cout << SGR_current;
+      stream << SGR_current;
       break;
       
     case Level::WARNING:
       SGR_current = &SGR_warning;
-      std::cout << SGR_current;
+      stream << SGR_current;
       break;
       
     case Level::ERROR:
       SGR_current = &SGR_error;
-      std::cout << SGR_current;
+      stream << SGR_current;
       break;
       
     case Level::DEBUG:
       SGR_current = &SGR_debug;
-      std::cout << SGR_current;
+      stream << SGR_current;
       break;
       
     case Level::INFO:
       SGR_current = &SGR_info;
-      std::cout << SGR_current;
+      stream << SGR_current;
       break;
     }
   }
@@ -102,26 +104,26 @@ public:
 
     switch (format.alignment) {
     case Alignment::LEFT:
-      std::cout << std::ios::left << std::setw(format.width) << str;
+      stream << std::ios::left << std::setw(format.width) << str;
       break;
 
     case Alignment::RIGHT:
-      std::cout << std::ios::right << std::setw(format.width) << str;
+      stream << std::ios::right << std::setw(format.width) << str;
       break;
 
     case Alignment::CENTER:
       int padding = (format.width - str.length()) / 2;
       for (int i = 0; i < padding; i++) {
-        std::cout << WHITE_SPACE;
+        stream << WHITE_SPACE;
       }
-      std::cout << std::setw(format.width - padding) << str;
+      stream << std::setw(format.width - padding) << str;
       break;
     }
   }
 
   void printString(const std::string &str) {
     checkIndent();
-    std::cout << str;
+    stream << str;
   }
 
   void println(const std::string &str) {
@@ -132,17 +134,17 @@ public:
   void putchar(char ch, std::string SGR_color = "") {
     checkIndent();
     if (SGR_color != "") {
-      std::cout << SGR_color;
+      stream << SGR_color;
     }
-    std::cout << ch << SGR_current;
+    stream << ch << SGR_current;
   }
 
-  void endLine() { std::cout << std::endl; }
+  void endLine() { stream << std::endl; }
 
   void pad(uint32_t length, char ch = WHITE_SPACE) {
     checkIndent();
     for (int i = 0; i < length; i++) {
-      std::cout << ch;
+      stream << ch;
     }
   }
 };
