@@ -177,6 +177,18 @@ public:
     return poly;
   }
 
+  Polynomial operator*(const Polynomial &poly) const {
+    if (this->head->exponent == 1 && this->head->next->exponent == 0) {
+      return poly * (*this);
+    } else if (poly.head->exponent == 1 && poly.head->next->exponent == 0) {
+      return (*this) * poly.head->next->coefficient;
+    } else {
+      // todo:
+      printf("Not implemented\n");
+    }
+    return poly;
+  }
+
   Polynomial operator-(Polynomial &poly) const {
     Polynomial t = poly * -1;
     Polynomial p = operator+(t);
