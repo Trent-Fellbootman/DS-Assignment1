@@ -35,6 +35,8 @@ OpType stringToOpType(char *buffer, int length) {
     res = OpType::EVALUATE;
   } else if (strcmp(buffer, OP_PLOT) == 0) {
     res = OpType::PLOT;
+  } else if (strcmp(buffer, OP_DELETE) == 0) {
+    res = OpType::DELETE;
   } else if (strcmp(buffer, OP_HELP) == 0) {
     res = OpType::HELP;
   } else if (strcmp(buffer, OP_EXIT) == 0) {

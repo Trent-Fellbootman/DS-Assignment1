@@ -146,7 +146,6 @@ template <typename T> void Application<T>::run() {
       int l = input.find_first_of(LEFT_BRACE);
       int r = input.find_last_of(RIGHT_BRACE);
       std::string args = input.substr(l + 1, r - l - 1);
-
       std::string arg1 =
           helper::strip(args.substr(0, args.find_first_of(',')), ' ');
       std::string arg2 = args.substr(args.find_first_of(',') + 1);
@@ -171,19 +170,27 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::EVALUATE: {
-      int l = input.find_first_of(LEFT_BRACE);
-      int r = input.find_last_of(RIGHT_BRACE);
-      std::string args = input.substr(l + 1, r - l - 1);
-
-      std::string arg1 =
-          helper::strip(args.substr(0, args.find_first_of(',')), ' ');
-      std::string arg2 = args.substr(args.find_first_of(',') + 1, ' ');
-      if (polynomials.find(arg1) != polynomials.end()) {
+      size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
+      size_t argsEnd = input.find_last_of(RIGHT_BRACE);
+      std::string rawArgs = helper::strip(
+          input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
+      std::vector<std::string> args = helper::separate(rawArgs, CHAR_COMMA);
+      if (args.size() < 2) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      } else if (args.size() > 2) {
+        logger.setLevel(Logger::Level::WARNING);
+        logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+      }
+      if (polynomials.find(args[0]) != polynomials.end()) {
         logger.println(std::to_string(
-            polynomials.find(arg1)->second.evaluate(atof(arg2.c_str()))));
+            polynomials.find(args[0])->second.evaluate(atof(args[1].c_str()))));
       } else {
         logger.setLevel(Logger::Level::ERROR);
-        logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + arg1);
+        logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + args[0]);
         logger.setLevel(Logger::Level::NORMAL);
       }
     } break;
@@ -242,7 +249,21 @@ template <typename T> void Application<T>::run() {
 
       plot(args[0], arg1, arg2);
     } break;
+    case OpType::DELETE: {
+      size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
+      size_t argsEnd = input.find_last_of(RIGHT_BRACE);
+      std::string rawArgs = helper::strip(
+          input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
 
+      auto it = polynomials.find(rawArgs);
+      if (it == polynomials.end()) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + rawArgs);
+        logger.setLevel(Logger::Level::NORMAL);
+      } else {
+        polynomials.erase(it);
+      }
+    } break;
     case OpType::UNKNOWN: {
       logger.setLevel(Logger::Level::ERROR);
       logger.println(UNKNOWN_OP_MESSAGE);
@@ -365,9 +386,9 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
-                    std::to_string(newColor.rgb[1]) + ";" +
-                    std::to_string(newColor.rgb[2]) + "m");
+        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) +
+                             ";" + std::to_string(newColor.rgb[1]) + ";" +
+                             std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {
         if (args.size() < 2) {
           logger.setLevel(Logger::Level::ERROR);
