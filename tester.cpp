@@ -64,5 +64,5 @@ int main() {
   // std::cout << std::unitbuf;
   std::cout << "koala" << std::endl;
   std::cout << "koala";
-  std::cout << "\x1b[2D";
+  std::cout << "\x1b[1Akangaroo";
 }

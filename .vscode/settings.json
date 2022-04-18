@@ -72,6 +72,8 @@
     "functional": "cpp",
     "iterator": "cpp",
     "utility": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "deque": "cpp",
+    "stack": "cpp"
   }
 }

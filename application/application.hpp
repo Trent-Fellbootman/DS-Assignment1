@@ -12,6 +12,7 @@
 #include <string.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #define BUFFER_SIZE 1024
 
@@ -93,7 +94,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
     } else if (rpn[i].tp == TokenTypes::VAR) {
       auto it = polynomials.find(rpn[i].data.variable);
       if (it == polynomials.end()) {
-        printf("Can't find variable %s\n", rpn[i].data.variable);
+        printf("Can't find variable %s\n", rpn[i].data.variable.c_str());
       } else {
         ret.push(it->second);
       }
@@ -144,7 +145,7 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::DISPLAY: {
-      printf("Found %d polynomials:\n", polynomials.size());
+      printf("Found %d polynomials:\n", static_cast<int>(polynomials.size()));
       for (auto &pair : polynomials) {
         printf("%s(x) = %s\n", pair.first.c_str(),
                pair.second.format().c_str());
@@ -198,8 +199,8 @@ void Application<T>::plot(std::string polyName, double start, double end) {
     values.push_back(polynomials[polyName].evaluate(start + paceX * i));
   }
 
-  double baseX = start, baseY = std::min(values);
-  double rangeX = end - start, rangeY = std::max(values) - baseY;
+  double baseX = start, baseY = *std::min_element(values.begin(), values.end());
+  double rangeX = end - start, rangeY = *std::max_element(values.begin(), values.end()) - baseY;
   double paceY = rangeY / (canvasExtent.height - 1);
 
   helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH - 1, ' ');
@@ -233,6 +234,6 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   std::cout << ">x" << std::endl;
 
   // occasionally print scale
-  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH)
+  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
 }
 } // namespace app
