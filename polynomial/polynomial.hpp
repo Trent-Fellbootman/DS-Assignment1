@@ -218,7 +218,7 @@ public:
 
   Polynomial operator*(const Polynomial &poly) const noexcept(false) {
     if (this->head->exponent == 1 && this->head->next->exponent == 0) {
-      return poly * (*this);
+      return poly * (this->head->next->coefficient);
     } else if (poly.head->exponent == 1 && poly.head->next->exponent == 0) {
       return (*this) * poly.head->next->coefficient;
     } else {
