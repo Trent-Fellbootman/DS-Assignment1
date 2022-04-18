@@ -7,7 +7,8 @@
 #include <stdio.h>
 #include <iomanip>
 #include <numeric>
-#define POLYNOMIAL_NOT_FOUND_MESSAGE "Error: Polynomial named %s does not exist"
+#include "application/constants.h"
+// #define POLYNOMIAL_NOT_FOUND_MESSAGE "Error: Polynomial named %s does not exist"
 
 std::vector<std::string> separate(std::string original,
                                   std::set<char> delimiters) {
@@ -63,6 +64,8 @@ int main() {
   // std::cout << std::setw(20) << 2135210000.0 << "cute" << std::endl;(outputWidth - contentWidth) / 2
   // std::cout << std::unitbuf;
   std::cout << "koala" << std::endl;
+  std::cout << SGR_FG_RED;
+  std::cout << "koala" << SGR_FG_WHITE;
   std::cout << "koala";
-  std::cout << "\x1b[1Akangaroo";
+  // std::cout << "\x1b[1Akangaroo";
 }
