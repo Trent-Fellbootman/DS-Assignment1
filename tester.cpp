@@ -6,6 +6,8 @@
 #include <vector>
 #include <stdio.h>
 #include <iomanip>
+#include <numeric>
+#define POLYNOMIAL_NOT_FOUND_MESSAGE "Error: Polynomial named %s does not exist"
 
 std::vector<std::string> separate(std::string original,
                                   std::set<char> delimiters) {
@@ -53,6 +55,14 @@ int main() {
   // for (auto &pair : m) {
   //   std::cout << pair.first << pair.second << std::endl;
   // }
+  // std::vector<int> v{0, 1, 2, 3, 4};
+  // std::cout << (m.find("kangaroo") == m.end()) << std::endl;
+  // printf(POLYNOMIAL_NOT_FOUND_MESSAGE, "koalas");
+  // std::cout << std::accumulate(v.begin(), v.end(), 0);
 
-  std::cout << std::setw(20) << 2135210000.0 << "cute" << std::endl;
+  // std::cout << std::setw(20) << 2135210000.0 << "cute" << std::endl;(outputWidth - contentWidth) / 2
+  // std::cout << std::unitbuf;
+  std::cout << "koala" << std::endl;
+  std::cout << "koala";
+  std::cout << "\x1b[2D";
 }

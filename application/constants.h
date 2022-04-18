@@ -39,3 +39,9 @@ enum class CalcOps { ADD, SUB, MUL, DIV };
 } // namespace app
 
 #endif /* APPLICATION_INCLUDE_CONTANTS_H_ */
+
+#define POLYNOMIAL_NOT_FOUND_MESSAGE "Error: Polynomial named %s does not exist"
+#define VERTICAL_AXIS_NUMBER_WIDTH 20
+#define HORIZONTAL_AXIS_NUMBER_WIDTH 20
+#define GRID_INTERIM_X 20
+#define GRID_INTERIM_Y 20

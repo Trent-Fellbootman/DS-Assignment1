@@ -244,6 +244,12 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
   return tokens;
 }
 
+void repeatPrint(int count, char ch) {
+  for (int i = 0; i < count; i++) {
+    std::cout << ch;
+  }
+}
+
 } // namespace helper
 
 } // namespace app
