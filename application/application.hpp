@@ -190,7 +190,7 @@ template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
   // handle exceptions
   if (polynomials.find(polyName) == polynomials.end()) {
-    logger.println(POLYNOMIAL_NOT_FOUND_MESSAGE, Logger::Level::ERROR);
+    logger.println(POLYNOMIAL_NOT_FOUND_MESSAGE);
   }
 
   // calculate values
@@ -240,7 +240,23 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   logger.printString(">x");
   logger.endLine();
 
-  // occasionally print scale
-  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
+  // print scale indicators
+  logger.pad(VERTICAL_AXIS_NUMBER_WIDTH + 2);
+  for (int i = 0; i < canvasExtent.width / GRID_INTERIM_X; i++) {
+    logger.pad(GRID_INTERIM_X - 1);
+    logger.printString("|");
+  }
+
+  // print scale
+  logger.pad(VERTICAL_AXIS_NUMBER_WIDTH + 2);
+  for (int i = 0; i < canvasExtent.width; i++) {
+    if ((i + HORIZONTAL_AXIS_NUMBER_WIDTH / 2) % GRID_INTERIM_X ==
+        GRID_INTERIM_X - 1) {
+      logger.printNumber(start + i * paceX, {Logger::Alignment::CENTER,
+                                             HORIZONTAL_AXIS_NUMBER_WIDTH});
+    } else {
+      logger.putchar(' ');
+    }
+  }
 }
 } // namespace app

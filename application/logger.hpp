@@ -119,15 +119,13 @@ public:
     }
   }
 
-  void printString(const std::string &str, Level level = Level::NORMAL) {
+  void printString(const std::string &str) {
     checkIndent();
-    for (int i = 0; i < currentIndent; i++) {
-      std::cout << WHITE_SPACE;
-    }
+    std::cout << str;
   }
 
-  void println(const std::string &str, Level level = Level::NORMAL) {
-    printString(str, level);
+  void println(const std::string &str) {
+    printString(str);
     endLine();
   }
 
