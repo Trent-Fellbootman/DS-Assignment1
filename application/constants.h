@@ -13,11 +13,13 @@
 #define WHITE_SPACE ' '
 #define LEFT_BRACKET '{'
 #define RIGHT_BRACKET '}'
+#define CHAR_COMMA ','
 
 #define PLUS_CH '+'
 #define MINUS_CH '-'
 #define MULTIPLY_CH '*'
 #define DIVIDE_CH '/'
+
 
 #define OP_ASSIGN "assign"
 #define OP_DISPLAY "disp"
@@ -30,6 +32,10 @@
 #define HELPER_MESSAGE "TODO"
 #define UNKNOWN_OP_MESSAGE "TODO"
 #define MESSAGE_PREFIX_POLY_NOT_FOUND "Can't find polynomial named "
+#define MESSAGE_FAILED_TO_PARSE_EXPRESSIONS "Failed to parse expression(s)"
+#define MESSAGE_TOO_MANY_ARGUMENTS "Too many arguments"
+#define MESSAGE_TOO_FEW_ARGUMENTS "Too few arguments"
+#define MESSAGE_INVALID_ARGUMENTS "Invalid argument(s)"
 
 namespace app {
 enum class OpType { ASSIGN, DISPLAY, EVALUATE, PLOT, UNKNOWN, HELP, EXIT };

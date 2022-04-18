@@ -10,6 +10,7 @@
 #include <numeric>
 #include <set>
 #include <sstream>
+#include <stdexcept>
 #include <stdio.h>
 #include <string.h>
 #include <string>
@@ -181,8 +182,64 @@ template <typename T> void Application<T>::run() {
     case OpType::PLOT: {
       size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
       size_t argsEnd = input.find_last_of(RIGHT_BRACE);
-      std::string rawArgs = input.substr(argsStart, argsEnd - argsStart);
-      
+      std::string rawArgs = helper::strip(
+          input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
+      std::vector<std::string> args = helper::separate(rawArgs, CHAR_COMMA);
+
+      if (args.size() < 3) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      } else if (args.size() > 3) {
+        logger.setLevel(Logger::Level::WARNING);
+        logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+      }
+
+      if (polynomials.find(args[0]) == polynomials.end()) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + args[0]);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      }
+
+      double arg1, arg2;
+
+      try {
+        std::cout << args[1] << std::endl;
+        std::cout << args[1].length() << std::endl;
+        arg1 = stod(args[1]);
+        std::cout << arg1 << std::endl;
+      } catch (std::exception &e) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      }
+
+      try {
+        std::cout << args[2] << std::endl;
+        std::cout << args[2].length() << std::endl;
+        arg1 = stod(args[2]);
+        std::cout << arg2 << std::endl;
+      } catch (std::exception &e) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      }
+
+      // std::cout << arg1 << ' ' << arg2 << std::endl;
+
+      if (arg1 >= arg2) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_INVALID_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
+      }
+
+      // plot(args[0], arg1, arg2);
     } break;
 
     case OpType::UNKNOWN: {
