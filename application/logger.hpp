@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stdint.h>
 #include <string>
-
 // only one warning/error is allowed per line
 
 namespace app {
@@ -12,12 +11,13 @@ class Logger {
 private:
   uint32_t currentIndent;
   std::string SGR_normal = SGR_FG_GREY, SGR_warning = SGR_FG_YELLOW,
-              SGR_error = SGR_FG_RED;
+              SGR_error = SGR_FG_RED, SGR_debug = SGR_FG_GREEN,
+              SGR_info = SGR_FG_WHITE;
   bool indented = false;
 
 public:
   enum class Alignment { LEFT, RIGHT, CENTER };
-  enum class Level { NORMAL, WARNING, ERROR };
+  enum class Level { NORMAL, WARNING, ERROR, DEBUG, INFO };
 
 private:
   Level level = Level::NORMAL;
@@ -39,7 +39,14 @@ private:
       case Level::ERROR:
         std::cout << LOGGER_PREFIX_ERROR;
         break;
+      case Level::DEBUG:
+        std::cout << LOGGER_PREFIX_DEBUG;
+        break;
+      case Level::INFO:
+        std::cout << LOGGER_PREFIX_INFO;
+        break;
       }
+
       indented = true;
     }
   }
@@ -66,12 +73,24 @@ public:
       SGR_current = &SGR_normal;
       std::cout << SGR_current;
       break;
+      
     case Level::WARNING:
       SGR_current = &SGR_warning;
       std::cout << SGR_current;
       break;
+      
     case Level::ERROR:
       SGR_current = &SGR_error;
+      std::cout << SGR_current;
+      break;
+      
+    case Level::DEBUG:
+      SGR_current = &SGR_debug;
+      std::cout << SGR_current;
+      break;
+      
+    case Level::INFO:
+      SGR_current = &SGR_info;
       std::cout << SGR_current;
       break;
     }
