@@ -83,7 +83,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
           ret.push(v1 - v2);
         } break;
         case CalcOps::MUL: {
-          std::cout << "Not implemented" << std::endl;
+          ret.push(v1 * v2);
         } break;
         case CalcOps::DIV: {
           std::cout << "Not implemented" << std::endl;

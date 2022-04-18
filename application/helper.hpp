@@ -45,11 +45,13 @@ OpType stringToType(char *buffer, int length) {
 }
 
 std::string strip(const std::string &original, char ch) {
-  std::string t = original;
-  while (t.find(ch) != std::string::npos) {
-    t.erase(t.find(ch));
+  std::string t = "";
+  for (int i = 0; i < original.size(); i++) {
+    if (original[i] != ch) {
+      t = t + original[i];
+    }
   }
-  return std::move(original);
+  return t;
 }
 
 std::vector<std::string> separate(std::string original,
@@ -85,15 +87,6 @@ std::vector<std::string> separate(std::string original,
   return std::move(res);
 }
 
-int skipSpace(const std::string &str, int cur) {
-  int i = cur;
-  for (; i < str.length(); i++) {
-    if (str[i] != ' ') {
-      break;
-    }
-  }
-  return i;
-}
 bool isNum(char c) { return (c >= '0' && c <= '9') || c == '.'; }
 
 int getP(CalcOps op) {
@@ -182,9 +175,9 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
   std::vector<Token<T>> tokens;
   std::string buffer = "";
   TokenTypes ct;
-  for (int i = 0; i < expr.size(); i++) {
-    if (delimiters.find(expr[i]) == delimiters.end()) {
-      buffer = buffer + expr[i];
+  for (int i = 0; i < stripped.size(); i++) {
+    if (delimiters.find(stripped[i]) == delimiters.end()) {
+      buffer = buffer + stripped[i];
     } else {
       if (!buffer.empty()) {
         TokenData<T> data;
@@ -195,9 +188,9 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
         tokens.push_back(t);
         buffer = "";
       }
-      switch (expr[i]) {
+      switch (stripped[i]) {
       case LEFT_BRACKET: {
-        buffer = expr.substr(i + 1);
+        buffer = stripped.substr(i + 1);
         buffer = buffer.substr(0, buffer.find_first_of(RIGHT_BRACKET));
         TokenData<T> data;
         data.polynomial = parsePolynomial<T>(buffer);
@@ -247,7 +240,7 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
       case LEFT_BRACE:
       case RIGHT_BRACE: {
         TokenData<T> data;
-        data.brace = (expr[i] == '(') ? TokenBrace::L : TokenBrace::R;
+        data.brace = (stripped[i] == '(') ? TokenBrace::L : TokenBrace::R;
         Token<T> t;
         t.tp = TokenTypes::BRACE;
         t.data = data;
