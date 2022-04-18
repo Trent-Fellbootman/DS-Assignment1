@@ -50,12 +50,6 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
   std::stack<poly::Polynomial<T>> ret;
   std::vector<helper::Token<T>> rpn = helper::expression2RPN(tokens);
   for (int i = 0; i < rpn.size(); i++) {
-    if (rpn[i].tp == TokenTypes::POLY) {
-      std::vector<std::pair<T, uint32_t>> debug = rpn[i].data.polynomial.dump();
-      std::cout << "rpn dumped" << std::endl;
-    }
-  }
-  for (int i = 0; i < rpn.size(); i++) {
     if (rpn[i].tp == TokenTypes::OP) {
       if (ret.size() < 1) {
         std::cout << "Invalid operation" << std::endl;
@@ -90,7 +84,6 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
           std::cout << "Not implemented" << std::endl;
         } break;
         }
-        std::vector<std::pair<T, uint32_t>> debug_info = ret.top().dump();
       }
 
     } else if (rpn[i].tp == TokenTypes::VAR) {
@@ -102,8 +95,6 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
       }
 
     } else if (rpn[i].tp == TokenTypes::POLY) {
-      std::vector<std::pair<T, uint32_t>> debug_info =
-          rpn[i].data.polynomial.dump();
       ret.push(rpn[i].data.polynomial);
     }
   }
@@ -144,7 +135,6 @@ template <typename T> void Application<T>::run() {
       std::vector<helper::Token<T>> tokens =
           helper::expressionToTokens<T>(arg2);
       poly::Polynomial<T> p = calculateExpr(tokens);
-      std::cout << "token dumped" << std::endl;
       auto it = polynomials.find(arg1);
       if (it == polynomials.end()) {
         polynomials.insert(
@@ -224,7 +214,8 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   for (int i = canvasExtent.height; i > -1; i--) {
     // print vertical axis and occasionally scale
     if (i % GRID_INTERIM_Y == 0) {
-      logger.printNumber(i * paceY, {Logger::Alignment::RIGHT, VERTICAL_AXIS_NUMBER_WIDTH});
+      logger.printNumber(
+          i * paceY, {Logger::Alignment::RIGHT, VERTICAL_AXIS_NUMBER_WIDTH});
       logger.printString("-|");
     } else {
       logger.pad(VERTICAL_AXIS_NUMBER_WIDTH);
@@ -251,6 +242,5 @@ void Application<T>::plot(std::string polyName, double start, double end) {
 
   // occasionally print scale
   helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
-  
 }
 } // namespace app
