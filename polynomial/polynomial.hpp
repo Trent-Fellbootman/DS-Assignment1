@@ -156,11 +156,11 @@ public:
         if (cur1->coefficient + cur2->coefficient != 0) {
           cur->next = std::make_unique<Node>(
               cur1->coefficient + cur2->coefficient, cur1->exponent, nullptr);
-          cur1 = cur1->next.get();
-          cur2 = cur2->next.get();
           cur = cur->next.get();
           res.head->exponent++;
         }
+          cur1 = cur1->next.get();
+          cur2 = cur2->next.get();
       }
     }
 
