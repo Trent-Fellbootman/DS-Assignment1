@@ -1,6 +1,7 @@
 #include "constants.h"
 #include "helper.hpp"
 #include "polynomial.hpp"
+#include "logger.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -30,6 +31,8 @@ private:
   };
 
   std::map<std::string, poly::Polynomial<T>> polynomials;
+  Extent canvasExtent{80, 24};
+  Logger logger;
 
   void mainLoop();
   void plot(std::string polyName, double start, double end);
@@ -38,7 +41,6 @@ private:
   poly::Polynomial<T>
   calculateExpr(const std::vector<helper::Token<T>> &tokens);
 
-  Extent canvasExtent{80, 24};
 };
 } // namespace app
 
@@ -117,7 +119,8 @@ template <typename T> void Application<T>::run() {
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
         std::count(input.begin(), input.end(), RIGHT_BRACE) == 0) {
-      std::cout << INVALID_COMMAND_MESSAGE << std::endl;
+      logger.printString(INVALID_COMMAND_MESSAGE);
+      logger.endLine();
       continue;
     }
 
@@ -191,6 +194,7 @@ template <typename T> void Application<T>::run() {
 
 template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
+
   if (polynomials.find(polyName) == polynomials.end()) {
     printf(POLYNOMIAL_NOT_FOUND_MESSAGE, polyName);
     std::cout << std::endl;
