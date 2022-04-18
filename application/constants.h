@@ -19,6 +19,7 @@
 #define OP_DISPLAY "disp"
 #define OP_EVALUATE "eval"
 #define OP_PLOT "plot"
+#define OP_DELETE "delete"
 #define OP_HELP "help"
 #define OP_EXIT "exit"
 #define OP_SET_PROPERTY "set"
@@ -55,6 +56,7 @@ enum class OpType {
   DISPLAY,
   EVALUATE,
   PLOT,
+  DELETE,
   UNKNOWN,
   HELP,
   EXIT,
@@ -66,9 +68,7 @@ enum class OpType {
 struct Color {
   std::vector<int> rgb;
 
-  Color(int r, int g, int b) {
-    rgb = {r, g, b};
-  }
+  Color(int r, int g, int b) { rgb = {r, g, b}; }
 };
 
 enum class TokenTypes { VAR, POLY, OP, BRACE };
