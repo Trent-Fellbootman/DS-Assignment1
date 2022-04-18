@@ -34,7 +34,7 @@
 const char* HELPER_MESSAGE = R"EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
 
 All commands or arguments are case-sensitive.
-White space between function name and parenthesis is not allowed.
+White space(s) between command name and parenthesis are not allowed.
 However, using white space to separate arguments and/or parts of expressions is allowed.
 
 Supported commands:
