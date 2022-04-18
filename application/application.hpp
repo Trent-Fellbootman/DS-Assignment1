@@ -145,8 +145,13 @@ template <typename T> void Application<T>::run() {
           helper::expressionToTokens<T>(arg2);
       poly::Polynomial<T> p = calculateExpr(tokens);
       std::cout << "token dumped" << std::endl;
-
-      polynomials.insert(std::pair<std::string, poly::Polynomial<T>>(arg1, p));
+      auto it = polynomials.find(arg1);
+      if (it == polynomials.end()) {
+        polynomials.insert(
+            std::pair<std::string, poly::Polynomial<T>>(arg1, p));
+      } else {
+        it->second = p;
+      }
     } break;
 
     case OpType::DISPLAY: {
