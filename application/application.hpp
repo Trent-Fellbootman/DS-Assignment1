@@ -1,6 +1,7 @@
 #include "constants.h"
 #include "helper.hpp"
 #include "polynomial.hpp"
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -12,7 +13,6 @@
 #include <string.h>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #define BUFFER_SIZE 1024
 
@@ -89,6 +89,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
           std::cout << "Not implemented" << std::endl;
         } break;
         }
+        std::vector<std::pair<T, uint32_t>> debug_info = ret.top().dump();
       }
 
     } else if (rpn[i].tp == TokenTypes::VAR) {
@@ -100,6 +101,8 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
       }
 
     } else if (rpn[i].tp == TokenTypes::POLY) {
+      std::vector<std::pair<T, uint32_t>> debug_info =
+          rpn[i].data.polynomial.dump();
       ret.push(rpn[i].data.polynomial);
     }
   }
@@ -135,7 +138,7 @@ template <typename T> void Application<T>::run() {
 
       std::string arg1 =
           helper::strip(args.substr(0, args.find_first_of(',')), ' ');
-      std::string arg2 = args.substr(args.find_first_of(',') + 1, ' ');
+      std::string arg2 = args.substr(args.find_first_of(',') + 1);
       std::vector<helper::Token<T>> tokens =
           helper::expressionToTokens<T>(arg2);
       poly::Polynomial<T> p = calculateExpr(tokens);
@@ -200,7 +203,8 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   }
 
   double baseX = start, baseY = *std::min_element(values.begin(), values.end());
-  double rangeX = end - start, rangeY = *std::max_element(values.begin(), values.end()) - baseY;
+  double rangeX = end - start,
+         rangeY = *std::max_element(values.begin(), values.end()) - baseY;
   double paceY = rangeY / (canvasExtent.height - 1);
 
   helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH - 1, ' ');
