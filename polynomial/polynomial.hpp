@@ -5,7 +5,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-// WARNING: ALL FUNCTIONS NOT DEBUGGED
 #pragma once
 namespace poly {
 namespace helper {

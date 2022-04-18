@@ -256,10 +256,7 @@ expression2RPN(const std::vector<helper::Token<T>> &tokens) {
         ts_s.push(tokens[i]);
       }
     } break;
-    case TokenTypes::POLY: {
-      std::vector<std::pair<T, uint32_t>> debug =
-          tokens[i].data.polynomial.dump();
-    }
+    case TokenTypes::POLY:
     case TokenTypes::VAR: {
       rpn.push_back(tokens[i]);
       break;
