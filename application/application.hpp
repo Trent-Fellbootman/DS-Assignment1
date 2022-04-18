@@ -34,6 +34,9 @@ private:
   std::map<std::string, poly::Polynomial<T>> polynomials;
   Extent canvasExtent{80, 24};
   Logger logger;
+  std::string plotColor = SGR_FG_WHITE;
+  bool gridEnabled = false;
+  std::string prompt = DEFAULT_PROMPT;
 
   void mainLoop();
   void plot(std::string polyName, double start, double end);
@@ -111,7 +114,13 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
 template <typename T> void Application<T>::run() {
   char buffer[BUFFER_SIZE];
   while (true) {
+    logger.endLine();
+    int indent = logger.getIndent();
+    logger.setIndent(0);
+    logger.printString(prompt);
     std::cin.getline(buffer, BUFFER_SIZE);
+    logger.endLine();
+    logger.setIndent(indent);
     std::string input(buffer);
 
     if (std::count(input.begin(), input.end(), LEFT_BRACE) == 0 ||
@@ -125,7 +134,7 @@ template <typename T> void Application<T>::run() {
 
     int index = input.find_first_of(LEFT_BRACE);
 
-    OpType operation = helper::stringToType(buffer, index);
+    OpType operation = helper::stringToOpType(buffer, index);
 
     switch (operation) {
     case OpType::HELP: {
@@ -240,6 +249,166 @@ template <typename T> void Application<T>::run() {
       logger.setLevel(Logger::Level::NORMAL);
     } break;
 
+    case OpType::SET_PROPERTY: {
+      size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
+      size_t argsEnd = input.find_last_of(RIGHT_BRACE);
+      std::string rawArgs = helper::strip(
+          input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
+      std::vector<std::string> args = helper::separate(rawArgs, CHAR_COMMA);
+
+      if (args[0] == "CANV_W") {
+        if (args.size() < 2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 2) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        int arg1;
+
+        try {
+          arg1 = stoi(args[1]);
+        } catch (std::exception &e) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        if (arg1 < MIN_CANVAS_WIDTH) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_PREFIX_CANVAS_WIDTH_TOO_SMALL +
+                         std::to_string(MIN_CANVAS_WIDTH));
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        canvasExtent.width = arg1;
+      } else if (args[0] == "CANV_H") {
+        if (args.size() < 2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 2) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        int arg1;
+
+        try {
+          arg1 = stoi(args[1]);
+        } catch (std::exception &e) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        if (arg1 < MIN_CANVAS_HEIGHT) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_PREFIX_CANVAS_HEIGHT_TOO_SMALL +
+                         std::to_string(MIN_CANVAS_HEIGHT));
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        canvasExtent.height = arg1;
+      } else if (args[0] == "PLOT_COL") {
+        if (args.size() < 4) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 4) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        std::vector<std::string> colorArgs(args.begin() + 1, args.end());
+        Color newColor = helper::strsToCol(colorArgs);
+        if (newColor.rgb[0] < 0) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        plotColor = "\x1b[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+                    std::to_string(newColor.rgb[1]) + ";" +
+                    std::to_string(newColor.rgb[2]) + "m";
+      } else if (args[0] == PROPERTY_DEFAULT_OUTPUT_COLOR) {
+        if (args.size() < 4) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 4) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        std::vector<std::string> colorArgs(args.begin() + 1, args.end());
+        Color newColor = helper::strsToCol(colorArgs);
+        if (newColor.rgb[0] < 0) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+                    std::to_string(newColor.rgb[1]) + ";" +
+                    std::to_string(newColor.rgb[2]) + "m");
+      } else if (args[0] == "GRID") {
+        if (args.size() < 2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 2) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        if (args[1] == "ON") {
+          gridEnabled = true;
+        } else if (args[1] == "OFF") {
+          gridEnabled = false;
+        } else {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_PREFIX_UNKNOWN_OPTION + args[1]);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+      } else if (args[0] == PROPERTY_PROMPT) {
+        if (args.size() < 2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 2) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        prompt = args[1] + " ";
+      } else {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(MESSAGE_PREFIX_UNKNOWN_PROPERTY + args[0]);
+        logger.setLevel(Logger::Level::NORMAL);
+      }
+    } break;
+
     case OpType::EXIT: {
       return;
     }
@@ -279,7 +448,7 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   // print y label
   logger.pad(VERTICAL_AXIS_NUMBER_WIDTH - 1);
 
-  logger.printString(" y^");
+  logger.printString("y ^");
   logger.endLine();
 
   for (int i = canvasExtent.height; i > -1; i--) {
@@ -297,9 +466,13 @@ void Application<T>::plot(std::string polyName, double start, double end) {
     for (double value : values) {
       double relativeOffset = (value - baseY) / paceY - i;
       if (relativeOffset >= -0.5 && relativeOffset < 0.5) {
-        logger.putchar('*');
+        logger.putchar('*', plotColor);
       } else {
-        logger.putchar(WHITE_SPACE);
+        if (gridEnabled) {
+          logger.putchar('+');
+        } else {
+          logger.putchar(WHITE_SPACE);
+        }
       }
     }
     logger.endLine();
@@ -308,7 +481,7 @@ void Application<T>::plot(std::string polyName, double start, double end) {
   // print horizontal axis
   logger.pad(VERTICAL_AXIS_NUMBER_WIDTH + 2);
   logger.pad(canvasExtent.width, '-');
-  logger.printString(">x");
+  logger.printString("> x");
   logger.endLine();
 
   // print scale indicators

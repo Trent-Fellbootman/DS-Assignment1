@@ -58,6 +58,10 @@ public:
     uint32_t width;
   };
 
+  void setSGR_output(std::string newColor) {
+    SGR_output = newColor;
+  }
+
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
 

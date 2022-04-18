@@ -1,3 +1,5 @@
+#include <vector>
+
 #ifndef APPLICATION_INCLUDE_CONTANTS_H_
 #define APPLICATION_INCLUDE_CONTANTS_H_
 
@@ -13,13 +15,16 @@
 #define MULTIPLY_CH '*'
 #define DIVIDE_CH '/'
 
-
 #define OP_ASSIGN "assign"
 #define OP_DISPLAY "disp"
 #define OP_EVALUATE "eval"
 #define OP_PLOT "plot"
 #define OP_HELP "help"
 #define OP_EXIT "exit"
+#define OP_SET_PROPERTY "set"
+
+#define MIN_CANVAS_WIDTH 5
+#define MIN_CANVAS_HEIGHT 5
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
 #define HELPER_MESSAGE "TODO"
@@ -30,10 +35,38 @@
 #define MESSAGE_TOO_FEW_ARGUMENTS "Too few arguments"
 #define MESSAGE_INVALID_ARGUMENTS "Invalid argument(s)"
 #define MESSAGE_INVALID_OPERATION "Invalid operation"
-#define MESSAGE_CANNOT_DIVIDE "Division is not allowed in polynomial operations. Use multiplications only."
+#define MESSAGE_CANNOT_DIVIDE                                                  \
+  "Division is not allowed in polynomial operations. Use multiplications "     \
+  "only."
+#define MESSAGE_PREFIX_CANVAS_WIDTH_TOO_SMALL "Canvas width must be at least "
+#define MESSAGE_PREFIX_CANVAS_HEIGHT_TOO_SMALL "Canvas height must be at least "
+#define MESSAGE_PREFIX_UNKNOWN_PROPERTY "Unknown property: "
+#define MESSAGE_PREFIX_UNKNOWN_OPTION "Unknown option: "
+#define DEFAULT_PROMPT "--> "
+
+#define PROPERTY_PROMPT "PROMPT"
+#define PROPERTY_DEFAULT_OUTPUT_COLOR "OUTPUT_COLOR"
 
 namespace app {
-enum class OpType { ASSIGN, DISPLAY, EVALUATE, PLOT, UNKNOWN, HELP, EXIT };
+enum class OpType {
+  ASSIGN,
+  DISPLAY,
+  EVALUATE,
+  PLOT,
+  UNKNOWN,
+  HELP,
+  EXIT,
+  SET_PROPERTY
+};
+
+struct Color {
+  std::vector<int> rgb;
+
+  Color(int r, int g, int b) {
+    rgb = {r, g, b};
+  }
+};
+
 enum class TokenTypes { VAR, POLY, OP, BRACE };
 
 enum class CalcOps { ADD, SUB, MUL, DIV };
@@ -51,10 +84,10 @@ enum class TokenBrace { L, R };
 #define GRID_INTERIM_Y 5
 
 // colors
-#define SGR_FG_RED "\x1b[38;2;255;0;0m"
-#define SGR_FG_GREEN "\x1b[38;2;0;255;0m"
-#define SGR_FG_BLUE "\x1b[38;2;0;0;255m"
-#define SGR_FG_YELLOW "\x1b[38;2;255;255;0m"
+#define SGR_FG_RED "\x1b[38;2;200;0;0m"
+#define SGR_FG_GREEN "\x1b[38;2;0;200;0m"
+#define SGR_FG_BLUE "\x1b[38;2;0;0;200m"
+#define SGR_FG_YELLOW "\x1b[38;2;200;200;0m"
 #define SGR_FG_WHITE "\x1b[38;2;255;255;255m"
 #define SGR_FG_GREY "\x1b[38;2;200;200;200m"
 

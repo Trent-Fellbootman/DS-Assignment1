@@ -1,3 +1,3 @@
 add_library(application INTERFACE)
 target_link_libraries(application INTERFACE polynomial)
-target_include_directories(application INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include) 
+target_include_directories(application INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)

@@ -23,7 +23,7 @@ template <typename T> struct Token {
   TokenData<T> data;
 };
 
-OpType stringToType(char *buffer, int length) {
+OpType stringToOpType(char *buffer, int length) {
   char tmp = buffer[length];
   buffer[length] = '\0';
   OpType res;
@@ -39,6 +39,8 @@ OpType stringToType(char *buffer, int length) {
     res = OpType::HELP;
   } else if (strcmp(buffer, OP_EXIT) == 0) {
     res = OpType::EXIT;
+  } else if (strcmp(buffer, OP_SET_PROPERTY) == 0) {
+    res = OpType::SET_PROPERTY;
   } else {
     res = OpType::UNKNOWN;
   }
@@ -293,6 +295,16 @@ void repeatPrint(int count, char ch) {
 }
 
 std::vector<std::string> separate(std::string str, char delimiter) {
+  if (str.find(delimiter) == std::string::npos) {
+    if (str.length() > 0) {
+      std::vector<std::string> ret{str};
+      return std::move(ret);
+    } else {
+      std::vector<std::string> ret(0);
+      return std::move(ret);
+    }
+  }
+
   std::vector<std::string> res;
   size_t lastIndex = -1;
   while (true) {
@@ -310,8 +322,28 @@ std::vector<std::string> separate(std::string str, char delimiter) {
   if (lastIndex < str.size() - 1) {
     res.push_back(str.substr(lastIndex + 1, str.size() - lastIndex - 1));
   }
-  
+
   return std::move(res);
+}
+
+app::Color strsToCol(std::vector<std::string> &strs) {
+  if (strs.size() < 3) {
+    return Color{-1, -1, -1};
+  }
+
+  app::Color color{-1, -1, -1};
+
+  for (int i = 0; i < 3; i++) {
+    try {
+      color.rgb[i] = std::stoi(strs[i]);
+      if (color.rgb[i] < 0 || color.rgb[i] > 255) {
+        return Color{-1, -1, -1};
+      }
+    } catch (std::exception &e) {
+      return Color{-1, -1, -1};
+    }
+  }
+  return color;
 }
 
 } // namespace helper
