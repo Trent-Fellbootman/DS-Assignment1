@@ -74,6 +74,7 @@
     "utility": "cpp",
     "numeric": "cpp",
     "deque": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "format": "cpp"
   }
 }

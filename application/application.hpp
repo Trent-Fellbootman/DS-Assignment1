@@ -194,12 +194,12 @@ template <typename T> void Application<T>::run() {
 
 template <typename T>
 void Application<T>::plot(std::string polyName, double start, double end) {
-
+  // handle exceptions
   if (polynomials.find(polyName) == polynomials.end()) {
-    printf(POLYNOMIAL_NOT_FOUND_MESSAGE, polyName);
-    std::cout << std::endl;
+    logger.println(POLYNOMIAL_NOT_FOUND_MESSAGE, Logger::Level::ERROR);
   }
 
+  // calculate values
   std::vector<double> values(canvasExtent.width);
   double paceX = (end - start) / (canvasExtent.width - 1);
   for (int i = 0; i < canvasExtent.width; i++) {
@@ -211,37 +211,42 @@ void Application<T>::plot(std::string polyName, double start, double end) {
          rangeY = *std::max_element(values.begin(), values.end()) - baseY;
   double paceY = rangeY / (canvasExtent.height - 1);
 
-  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH - 1, ' ');
+  // print y label
+  logger.pad(VERTICAL_AXIS_NUMBER_WIDTH - 1);
 
-  std::cout << "y^" << std::endl;
+  logger.printString(" y^");
+  logger.endLine();
 
   for (int i = canvasExtent.height; i > -1; i--) {
     // print vertical axis and occasionally scale
     if (i % GRID_INTERIM_Y == 0) {
-      std::cout << std::ios::left << std::setw(VERTICAL_AXIS_NUMBER_WIDTH)
-                << i * paceY << '|';
+      logger.printNumber(i * paceY, {Logger::Alignment::RIGHT, VERTICAL_AXIS_NUMBER_WIDTH});
+      logger.printString("-|");
     } else {
-      helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
-      std::cout << '|';
+      logger.pad(VERTICAL_AXIS_NUMBER_WIDTH);
+      logger.printString(" |");
     }
 
     // print dots. No value: plus; Dots on curve: asterisk
     for (double value : values) {
       double relativeOffset = (value - baseY) / paceY;
       if (relativeOffset >= -0.5 && relativeOffset < 0.5) {
-        std::cout << '*';
+        logger.putchar('*');
       } else {
-        std::cout << '+';
+        logger.putchar('+');
       }
     }
+    logger.endLine();
   }
 
   // print horizontal axis
-  helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH + 1, ' ');
-  helper::repeatPrint(canvasExtent.width, '-');
-  std::cout << ">x" << std::endl;
+  logger.pad(VERTICAL_AXIS_NUMBER_WIDTH + 2);
+  logger.pad(canvasExtent.width, '-');
+  logger.printString(">x");
+  logger.endLine();
 
   // occasionally print scale
   helper::repeatPrint(VERTICAL_AXIS_NUMBER_WIDTH, ' ');
+  
 }
 } // namespace app

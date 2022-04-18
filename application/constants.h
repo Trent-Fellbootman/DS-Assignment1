@@ -58,6 +58,9 @@ enum class TokenBrace { L, R };
 // #define SGR_BG_DEFAULT SGR_BG_BLACK
 #define SGR_FG_DEFAULT SGR_FG_GREY
 
+// ANSI Operators
+#define ANSI_BACKSPACE "\x1b[1D"
+
 // Logger
 #define LOGGER_PREFIX_WARNING "WARNING: "
 #define LOGGER_PREFIX_ERROR "ERROR: "
