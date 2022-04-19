@@ -3,6 +3,7 @@
 #include "polynomial.hpp"
 #include <cstring>
 #include <iostream>
+#include <map>
 #include <set>
 #include <stack>
 #include <string>
@@ -105,6 +106,7 @@ int readInt(const std::string &str, int &p) {
 
 template <typename T>
 poly::Polynomial<T> parsePolynomial(const std::string &expr) {
+  std::set<uint32_t> exps;
   std::vector<std::pair<T, uint32_t>> items;
   bool neg;
   for (int i = 0; i < expr.size();) {
@@ -127,23 +129,47 @@ poly::Polynomial<T> parsePolynomial(const std::string &expr) {
       coefficient = -coefficient;
     }
     if (i == expr.size()) {
+      if (exps.find(0) != exps.end()) {
+        throw invalid_polynomial_exception();
+      }
       items.push_back(std::pair<T, uint32_t>(coefficient, 0));
+      exps.insert(0);
       break;
     } else if (expr[i] != 'x' && (expr[i] == '+' || expr[i] == '-')) {
+      if (exps.find(0) != exps.end()) {
+        throw invalid_polynomial_exception();
+      }
+      exps.insert(0);
+
       items.push_back(std::pair<T, uint32_t>(coefficient, 0));
       i++;
     } else if (expr[i] == 'x') {
       i++;
       if (i >= expr.size()) {
+        if (exps.find(1) != exps.end()) {
+          throw invalid_polynomial_exception();
+        }
+
         items.push_back(std::pair<T, uint32_t>(coefficient, 1));
+        exps.insert(1);
         break;
       }
       if (expr[i] != '^') {
+        if (exps.find(1) != exps.end()) {
+          throw invalid_polynomial_exception();
+        }
+
         items.push_back(std::pair<T, uint32_t>(coefficient, 1));
+        exps.insert(1);
       } else {
         i++;
         uint32_t exponent = readInt(expr, i);
+        if (exps.find(exponent) != exps.end()) {
+          throw invalid_polynomial_exception();
+        }
+
         items.push_back(std::pair<T, uint32_t>(coefficient, exponent));
+        exps.insert(exponent);
       }
     } else {
       throw invalid_polynomial_exception();
