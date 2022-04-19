@@ -6,6 +6,7 @@ using namespace poly;
 TEST(POW_TEST, pow) {
   EXPECT_EQ(poly::helper::pow(2, 10), 1024);
   EXPECT_EQ(poly::helper::pow(100, 0), 1);
+  EXPECT_EQ(poly::helper::pow(0, 1), 0);
 }
 
 TEST(EVALUATE_TEST_1, evaluate) {
@@ -23,6 +24,13 @@ TEST(EVALUATE_TEST_2, evaluate) {
   items.push_back(std::pair<int, uint32_t>(78, 3));
   Polynomial<int> p(items);
   EXPECT_EQ(p.evaluate(2), 1648);
+}
+
+TEST(EVALUATE_TEST_3, evaluate) {
+  std::vector<std::pair<int, uint32_t>> items;
+  items.push_back(std::pair<int, uint32_t>(2, 0));
+  Polynomial<int> p(items);
+  EXPECT_EQ(p.evaluate(100), 2);
 }
 
 TEST(POLYNOMIAL_ADD_1, add) {
@@ -65,7 +73,7 @@ TEST(POLYNOMIAL_ADD_3, add) {
   EXPECT_EQ(p3.evaluate(3), 2162);
 }
 
-TEST(POLYNOMIAL_MULTIPLY, multiply) {
+TEST(POLYNOMIAL_MULTIPLY_1, multiply) {
   std::vector<std::pair<int, uint32_t>> items1;
   items1.push_back(std::pair<int, uint32_t>(1, 5));
   items1.push_back(std::pair<int, uint32_t>(2, 0));
@@ -79,6 +87,16 @@ TEST(POLYNOMIAL_MULTIPLY, multiply) {
       EXPECT_EQ(ret.evaluate(j), base * i);
     }
   }
+}
+
+TEST(POLYNOMIAL_MULTIPLY_2, multiply) {
+  std::vector<std::pair<int, uint32_t>> items1;
+  items1.push_back(std::pair<int, uint32_t>(1, 5));
+  items1.push_back(std::pair<int, uint32_t>(2, 0));
+  items1.push_back(std::pair<int, uint32_t>(78, 3));
+  Polynomial<int> p1(items1);
+  Polynomial<int> p2 = p1 * 0;
+  EXPECT_EQ(p2.evaluate(1), 0);
 }
 
 TEST(POLYNOMIAL_DIVISION, division) {

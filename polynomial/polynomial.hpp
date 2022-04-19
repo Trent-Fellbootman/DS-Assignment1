@@ -94,7 +94,7 @@ public:
   Polynomial &operator=(Polynomial &&) = default;
   Polynomial(std::unique_ptr<Node> head) : head(std::move(head)) {}
 
-  uint32_t getLength() { return head->exponent; }
+  uint32_t getLength() const { return head->exponent; }
 
   std::vector<std::pair<T, uint32_t>> dump() const {
     std::vector<std::pair<T, uint32_t>> ret;
@@ -243,7 +243,7 @@ public:
     return p;
   }
 
-  std::string formatItem(T coefficient, uint32_t exponent) {
+  static std::string formatItem(T coefficient, uint32_t exponent) {
     std::stringstream stream;
     if ((coefficient != 1 && coefficient != -1) || exponent == 0) {
       stream << coefficient;
@@ -258,7 +258,7 @@ public:
     return stream.str();
   }
 
-  std::string format() {
+  std::string format() const {
     Node *current = head->next.get();
     std::stringstream stream;
     stream << formatItem(current->coefficient, current->exponent);
