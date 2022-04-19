@@ -46,7 +46,7 @@ private:
   };
 
   std::map<std::string, poly::Polynomial<T>> polynomials;
-  Extent canvasExtent{80, 24};
+  Extent canvasExtent{48, 12};
   Logger logger;
   std::string plotColor = SGR_FG_WHITE;
   bool gridEnabled = false;
