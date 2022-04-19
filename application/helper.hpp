@@ -343,7 +343,7 @@ app::Color strsToCol(std::vector<std::string> &strs) {
     try {
       color.rgb[i] = std::stoi(strs[i]);
       if (color.rgb[i] < 0 || color.rgb[i] > 255) {
-        return Color{-1, -1, -1};
+        return Color{-2, -2, -2};
       }
     } catch (std::exception &e) {
       return Color{-1, -1, -1};

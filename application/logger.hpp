@@ -11,7 +11,7 @@ namespace app {
 class Logger {
 private:
   uint32_t currentIndent;
-  std::string SGR_normal, SGR_warning, SGR_error, SGR_debug, SGR_info,
+  std::string SGR_input, SGR_warning, SGR_error, SGR_debug, SGR_info,
       SGR_output;
   bool indented;
   std::ostream &stream;
@@ -63,6 +63,10 @@ public:
     SGR_output = newColor;
   }
 
+  void setSGR_input(std::string newColor) {
+    SGR_input = newColor;
+  }
+
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
 
@@ -97,7 +101,7 @@ public:
 
   Logger(std::ostream *stream = &std::cout)
       : stream(*stream), currentIndent(0), indented(false),
-        level(Level::NORMAL), SGR_normal(SGR_FG_GREY),
+        level(Level::NORMAL), SGR_input(SGR_FG_GREY),
         SGR_warning(SGR_FG_YELLOW), SGR_error(SGR_FG_RED),
         SGR_debug(SGR_FG_GREEN), SGR_info(SGR_FG_WHITE),
         SGR_output(SGR_FG_GREEN) {
@@ -136,14 +140,14 @@ public:
       }
       break;
     }
-    stream << SGR_normal;
+    stream << SGR_input;
   }
 
   void printString(const std::string &str) {
     stream << *SGR_current;
     checkIndent();
     stream << str;
-    stream << SGR_normal;
+    stream << SGR_input;
   }
 
   void endLine() {
@@ -156,7 +160,7 @@ public:
     stream << *SGR_current;
     printString(str);
     endLine();
-    stream << SGR_normal;
+    stream << SGR_input;
   }
 
   void putchar(char ch, std::string SGR_color = "") {
@@ -165,7 +169,7 @@ public:
     if (SGR_color != "") {
       stream << SGR_color;
     }
-    stream << ch << SGR_normal;
+    stream << ch << SGR_input;
   }
 
   void pad(uint32_t length, char ch = WHITE_SPACE) {
@@ -174,7 +178,7 @@ public:
     for (int i = 0; i < length; i++) {
       stream << ch;
     }
-    stream << SGR_normal;
+    stream << SGR_input;
   }
 
   void clear() {

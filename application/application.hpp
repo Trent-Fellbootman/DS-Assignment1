@@ -355,17 +355,22 @@ template <typename T> void Application<T>::run() {
 
         std::vector<std::string> colorArgs(args.begin() + 1, args.end());
         Color newColor = helper::strsToCol(colorArgs);
-        if (newColor.rgb[0] < 0) {
+        if (newColor.rgb[0] == -1) {
           logger.setLevel(Logger::Level::ERROR);
           logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
           logger.setLevel(Logger::Level::NORMAL);
           continue;
+        } else if (newColor.rgb[0] == -2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_INVALID_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
         }
 
-        plotColor = "\x1b[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+        plotColor = "\e[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
                     std::to_string(newColor.rgb[1]) + ";" +
                     std::to_string(newColor.rgb[2]) + "m";
-      } else if (args[0] == PROPERTY_DEFAULT_OUTPUT_COLOR) {
+      } else if (args[0] == PROPERTY_OUTPUT_COLOR) {
         if (args.size() < 4) {
           logger.setLevel(Logger::Level::ERROR);
           logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
@@ -379,14 +384,48 @@ template <typename T> void Application<T>::run() {
 
         std::vector<std::string> colorArgs(args.begin() + 1, args.end());
         Color newColor = helper::strsToCol(colorArgs);
-        if (newColor.rgb[0] < 0) {
+        if (newColor.rgb[0] == -1) {
           logger.setLevel(Logger::Level::ERROR);
           logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
           logger.setLevel(Logger::Level::NORMAL);
           continue;
+        } else if (newColor.rgb[0] == -2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_INVALID_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
         }
 
-        logger.setSGR_output("\x1b[38;2;" + std::to_string(newColor.rgb[0]) +
+        logger.setSGR_output("\e[38;2;" + std::to_string(newColor.rgb[0]) +
+                             ";" + std::to_string(newColor.rgb[1]) + ";" +
+                             std::to_string(newColor.rgb[2]) + "m");
+      }else if (args[0] == PROPERTY_INPUT_COLOR) {
+        if (args.size() < 4) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (args.size() > 4) {
+          logger.setLevel(Logger::Level::WARNING);
+          logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+        }
+
+        std::vector<std::string> colorArgs(args.begin() + 1, args.end());
+        Color newColor = helper::strsToCol(colorArgs);
+        if (newColor.rgb[0] == -1) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        } else if (newColor.rgb[0] == -2) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_INVALID_ARGUMENTS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
+        logger.setSGR_input("\e[38;2;" + std::to_string(newColor.rgb[0]) +
                              ";" + std::to_string(newColor.rgb[1]) + ";" +
                              std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {

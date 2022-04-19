@@ -30,7 +30,62 @@
 #define MIN_CANVAS_HEIGHT 5
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
-#define HELPER_MESSAGE "TODO"
+#define HELPER_MESSAGE R"(EOF)USAGE: <commandName>(arg1, arg2, ..., argn)
+
+All commands or arguments are case-sensitive.
+White space between function name and parenthesis is not allowed.
+However, using white space to separate arguments and/or parts of expressions is allowed.
+
+Supported commands:
+  assign(<polynomialName>, <expression>)
+    Creates a new polynomial with the given name and expression, or assign a new polynomial to an existing name.
+    Example: assign(a, b + {3} * {x^2 + 1 + 2x})
+    Expressions can include polynomial names (names that already have polynomials assigned to) and/or polynomial literals.
+    Polynomials literals are delimited with "{" and "}". For example: "{1 + x^2}"
+    Note that polynomial multiplications are not yet supported. For example, "{3} * {1 + x^2}" is allowed, but "{1 + x} * {1 - x}" is not.
+    
+  disp()
+    Displays all existing polynomials.
+
+  plot(<polynomialName>, <xMin>, <xMax>)
+
+  set(<propertyName>, <propertyValueArgument1>, ..., <propertyValueArgumentN>)
+    Set environment variables (properties).
+    Supported properties:
+      RGB-Types:
+        Arguments for setting these properties are formatted as <r>, <g>, <b>, with each value ranging from 0 to 255.
+        Example: set(OUTPUT_COL, 255, 0, 0)
+        Properties of this type include:
+          OUTPUT_COL: Color of the non-graphical program output (this does not apply to colors used when showing warnings/errors);
+          INPUT_COL: Color of the user input;
+          PLOT_COL: The color of the curve when plotting polynomials.
+      
+      Numerical Types:
+        Arguments for settings these properties are formatted as <value> (both integers and decimal values).
+        Example: set(CANV_W, 100)
+        Properties of this type include:
+          CANV_W: Width of the canvas (used when plotting polynomials), in number of characters, integer;
+          CANV_H: Height of the canvas, in number of characters, integer.
+
+      Bool Types:
+        Arguments for setting these properties are formatted as <ON/OFF>.
+        Example: set(GRID, ON)
+        Properties of this type include:
+          GRID: Whether or not to show the grid when plotting polynomials. Default: OFF.
+
+
+  delete(<polynomialName>)
+    Deletes the polynomial with the given name.
+
+  clear()
+    Clears all existing polynomials.
+
+  clc()
+    Clears the console.
+
+  exit()
+    Exits the program.
+(EOF)"
 #define UNKNOWN_OP_MESSAGE "TODO"
 #define MESSAGE_PREFIX_POLY_NOT_FOUND "Can't find polynomial named "
 #define MESSAGE_FAILED_TO_PARSE_EXPRESSIONS "Failed to parse expression(s)"
@@ -48,7 +103,8 @@
 #define DEFAULT_PROMPT "--> "
 
 #define PROPERTY_PROMPT "PROMPT"
-#define PROPERTY_DEFAULT_OUTPUT_COLOR "OUTPUT_COLOR"
+#define PROPERTY_OUTPUT_COLOR "OUTPUT_COL"
+#define PROPERTY_INPUT_COLOR "INPUT_COL"
 
 namespace app {
 enum class OpType {
@@ -88,16 +144,16 @@ enum class TokenBrace { L, R };
 #define GRID_INTERIM_Y 5
 
 // colors
-#define SGR_FG_RED "\x1b[38;2;200;0;0m"
-#define SGR_FG_GREEN "\x1b[38;2;0;200;0m"
-#define SGR_FG_BLUE "\x1b[38;2;0;0;200m"
-#define SGR_FG_YELLOW "\x1b[38;2;200;200;0m"
-#define SGR_FG_WHITE "\x1b[38;2;255;255;255m"
-#define SGR_FG_GREY "\x1b[38;2;200;200;200m"
+#define SGR_FG_RED "\e[38;2;200;0;0m"
+#define SGR_FG_GREEN "\e[38;2;0;200;0m"
+#define SGR_FG_BLUE "\e[38;2;0;0;200m"
+#define SGR_FG_YELLOW "\e[38;2;200;200;0m"
+#define SGR_FG_WHITE "\e[38;2;255;255;255m"
+#define SGR_FG_GREY "\e[38;2;200;200;200m"
 
 // ANSI Operators
-#define ANSI_BACKSPACE "\x1b[1D"
-#define ANSI_CLEAR_CONSOLE "\x1b[2J"
+#define ANSI_BACKSPACE "\e[1D"
+#define ANSI_CLEAR_CONSOLE "\e[2J"
 
 // Logger
 #define LOGGER_PREFIX_WARNING "[WARNING] "
