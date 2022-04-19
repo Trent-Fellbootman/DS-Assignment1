@@ -30,7 +30,9 @@
 #define MIN_CANVAS_HEIGHT 5
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
-#define HELPER_MESSAGE R"(EOF)USAGE: <commandName>(arg1, arg2, ..., argn)
+//#define HELPER_MESSAGE                                                         \
+
+const char *HELPER_MESSAGE = R"*+EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
 
 All commands or arguments are case-sensitive.
 White space between function name and parenthesis is not allowed.
@@ -41,7 +43,10 @@ Supported commands:
     Creates a new polynomial with the given name and expression, or assign a new polynomial to an existing name.
     Example: assign(a, b + {3} * {x^2 + 1 + 2x})
     Expressions can include polynomial names (names that already have polynomials assigned to) and/or polynomial literals.
-    Polynomials literals are delimited with "{" and "}". For example: "{1 + x^2}"
+    Polynomials literals are delimited with "{
+  " and "
+}
+". For example: " { 1 + x ^ 2 }"
     Note that polynomial multiplications are not yet supported. For example, "{3} * {1 + x^2}" is allowed, but "{1 + x} * {1 - x}" is not.
     
   disp()
@@ -57,7 +62,7 @@ Supported commands:
         Example: set(OUTPUT_COL, 255, 0, 0)
         Properties of this type include:
           OUTPUT_COL: Color of the non-graphical program output (this does not apply to colors used when showing warnings/errors);
-          INPUT_COL: Color of the user input;
+INPUT_COL : Color of the user input;
           PLOT_COL: The color of the curve when plotting polynomials.
       
       Numerical Types:
@@ -85,7 +90,7 @@ Supported commands:
 
   exit()
     Exits the program.
-(EOF)"
+)*+EOF";
 #define UNKNOWN_OP_MESSAGE "TODO"
 #define MESSAGE_PREFIX_POLY_NOT_FOUND "Can't find polynomial named "
 #define MESSAGE_FAILED_TO_PARSE_EXPRESSIONS "Failed to parse expression(s)"
