@@ -44,10 +44,43 @@ private:
   std::unique_ptr<poly::Polynomial<T>> evaluateExpression(std::string expr);
   poly::Polynomial<T>
   calculateExpr(const std::vector<helper::Token<T>> &tokens);
+  void displayHelpMessage(std::vector<std::string> &args);
 };
 } // namespace app
 
 namespace app {
+
+template <typename T>
+void Application<T>::displayHelpMessage(std::vector<std::string> &args) {
+  if (args.size() == 0) {
+    logger.println(HELPER_MESSAGE);
+  } else {
+    if (args[0] == "plot") {
+      logger.println(HELPER_MESSAGE_PLOT);
+    } else if (args[0] == "help") {
+      logger.println(HELPER_MESSAGE_HELP);
+    } else if (args[0] == "exit") {
+      logger.println(HELPER_MESSAGE_EXIT);
+    } else if (args[0] == "clear") {
+      logger.println(HELPER_MESSAGE_CLEAR);
+    } else if (args[0] == "assign") {
+      logger.println(HELPER_MESSAGE_ASSIGN);
+    } else if (args[0] == "disp") {
+      logger.println(HELPER_MESSAGE_DISP);
+    } else if (args[0] == "set") {
+      logger.println(HELPER_MESSAGE_SET);
+    } else if (args[0] == "clc") {
+      logger.println(HELPER_MESSAGE_CLC);
+    } else if (args[0] == "delete") {
+      logger.println(HELPER_MESSAGE_DELETE);
+    } else {
+      logger.setLevel(Logger::Level::ERROR);
+      logger.println(HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND + args[1]);
+      logger.setLevel(Logger::Level::NORMAL);
+    }
+  }
+}
+
 template <typename T>
 poly::Polynomial<T>
 Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
@@ -111,6 +144,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
 
   return ret.top();
 }
+
 template <typename T> void Application<T>::run() {
   char buffer[BUFFER_SIZE];
   while (true) {
@@ -138,7 +172,12 @@ template <typename T> void Application<T>::run() {
 
     switch (operation) {
     case OpType::HELP: {
-      logger.println(HELPER_MESSAGE);
+      size_t argsStart = input.find_first_of(LEFT_BRACE) + 1;
+      size_t argsEnd = input.find_last_of(RIGHT_BRACE);
+      std::string arguments = helper::strip(
+          input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
+      std::vector<std::string> args = helper::separate(arguments, CHAR_COMMA);
+      displayHelpMessage(args);
       continue;
     } break;
 
@@ -399,7 +438,7 @@ template <typename T> void Application<T>::run() {
         logger.setSGR_output("\e[38;2;" + std::to_string(newColor.rgb[0]) +
                              ";" + std::to_string(newColor.rgb[1]) + ";" +
                              std::to_string(newColor.rgb[2]) + "m");
-      }else if (args[0] == PROPERTY_INPUT_COLOR) {
+      } else if (args[0] == PROPERTY_INPUT_COLOR) {
         if (args.size() < 4) {
           logger.setLevel(Logger::Level::ERROR);
           logger.println(MESSAGE_TOO_FEW_ARGUMENTS);
@@ -425,9 +464,9 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_input("\e[38;2;" + std::to_string(newColor.rgb[0]) +
-                             ";" + std::to_string(newColor.rgb[1]) + ";" +
-                             std::to_string(newColor.rgb[2]) + "m");
+        logger.setSGR_input("\e[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
+                            std::to_string(newColor.rgb[1]) + ";" +
+                            std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {
         if (args.size() < 2) {
           logger.setLevel(Logger::Level::ERROR);

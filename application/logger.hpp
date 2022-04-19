@@ -59,13 +59,9 @@ public:
     uint32_t width;
   };
 
-  void setSGR_output(std::string newColor) {
-    SGR_output = newColor;
-  }
+  void setSGR_output(std::string newColor) { SGR_output = newColor; }
 
-  void setSGR_input(std::string newColor) {
-    SGR_input = newColor;
-  }
+  void setSGR_input(std::string newColor) { SGR_input = newColor; }
 
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
@@ -144,13 +140,21 @@ public:
   }
 
   void printString(const std::string &str) {
+    std::vector<std::string> lines = helper::separate(str, '\n');
     stream << *SGR_current;
-    checkIndent();
-    stream << str;
+    for (int i = 0; i < str.length(); i++) {
+      checkIndent();
+      if (str[i] == CHAR_LINE_BREAK) {
+        endLine();
+      } else {
+        stream << str[i];
+      }
+    }
     stream << SGR_input;
   }
 
   void endLine() {
+    checkIndent();
     stream << std::endl;
     indented = false;
     lineCount++;
@@ -181,8 +185,6 @@ public:
     stream << SGR_input;
   }
 
-  void clear() {
-    stream << ANSI_CLEAR_CONSOLE;
-  }
+  void clear() { stream << ANSI_CLEAR_CONSOLE; }
 };
 } // namespace app
