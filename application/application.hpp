@@ -19,6 +19,20 @@
 #define BUFFER_SIZE 1024
 
 namespace app {
+class variable_not_found_exception : public std::exception {
+private:
+  std::string err;
+
+public:
+public:
+  variable_not_found_exception(std::string var) {
+    char buffer[512];
+    std::snprintf(buffer, sizeof(buffer), POLYNOMIAL_NOT_FOUND_MESSAGE,
+                  var.c_str());
+    this->err = buffer;
+  }
+  const char *what() const noexcept override final { return err.c_str(); }
+};
 template <typename T> class Application {
 
 public:
@@ -130,9 +144,7 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
     } else if (rpn[i].tp == TokenTypes::VAR) {
       auto it = polynomials.find(rpn[i].data.variable);
       if (it == polynomials.end()) {
-        logger.setLevel(Logger::Level::ERROR);
-        logger.println("Can't find variable " + rpn[i].data.variable);
-        logger.setLevel(Logger::Level::NORMAL);
+        throw variable_not_found_exception(rpn[i].data.variable);
       } else {
         ret.push(it->second);
       }
@@ -190,13 +202,20 @@ template <typename T> void Application<T>::run() {
       std::string arg2 = args.substr(args.find_first_of(',') + 1);
       std::vector<helper::Token<T>> tokens =
           helper::expressionToTokens<T>(arg2);
-      poly::Polynomial<T> p = calculateExpr(tokens);
-      auto it = polynomials.find(arg1);
-      if (it == polynomials.end()) {
-        polynomials.insert(
-            std::pair<std::string, poly::Polynomial<T>>(arg1, p));
-      } else {
-        it->second = p;
+      try {
+        poly::Polynomial<T> p = calculateExpr(tokens);
+        auto it = polynomials.find(arg1);
+        if (it == polynomials.end()) {
+          polynomials.insert(
+              std::pair<std::string, poly::Polynomial<T>>(arg1, p));
+        } else {
+          it->second = p;
+        }
+      } catch (std::exception &e) {
+        logger.setLevel(Logger::Level::ERROR);
+        logger.println(e.what());
+        logger.setLevel(Logger::Level::NORMAL);
+        continue;
       }
     } break;
 
@@ -517,6 +536,7 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::EXIT: {
+      logger.restore();
       return;
     }
     }

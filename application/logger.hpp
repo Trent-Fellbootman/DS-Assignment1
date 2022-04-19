@@ -103,6 +103,7 @@ public:
         SGR_output(SGR_FG_GREEN) {
     setLevel(level);
   }
+  void restore() { stream << ANSI_RESTORE_CONSOLE << std::endl; }
 
   template <typename T> void printNumber(T number, Format format) {
     stream << *SGR_current;
