@@ -9,7 +9,7 @@ if (CMAKE_CXX_PLATFORM_ID STREQUAL Darwin)
 endif()
 
 add_subdirectory ("polynomial")
-# add_subdirectory ("test")
+add_subdirectory ("test")
 add_subdirectory("application")
 
 add_executable(polycal main.cpp)
