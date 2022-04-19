@@ -26,7 +26,10 @@ private:
 public:
 public:
   variable_not_found_exception(std::string var) {
-    this->err = "Can't find variable " + var;
+    char buffer[512];
+    std::snprintf(buffer, sizeof(buffer), POLYNOMIAL_NOT_FOUND_MESSAGE,
+                  var.c_str());
+    this->err = buffer;
   }
   const char *what() const noexcept override final { return err.c_str(); }
 };
