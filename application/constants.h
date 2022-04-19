@@ -31,7 +31,7 @@
 #define MIN_CANVAS_HEIGHT 5
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
-const char* HELPER_MESSAGE = R"EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
+const char *HELPER_MESSAGE = R"EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
 
 All commands or arguments are case-sensitive.
 White space(s) between command name and parenthesis are not allowed.
@@ -57,23 +57,25 @@ Supported commands:
 
 For more information, use help(<commandName>) to display helper message specific to each command. For example, help(plot).)EOF";
 
-const char* HELPER_MESSAGE_PLOT = R"EOF(USAGE: plot(<polynomialName>, <xMin>, <xMax>)
+const char *HELPER_MESSAGE_PLOT =
+    R"EOF(USAGE: plot(<polynomialName>, <xMin>, <xMax>)
 
 Plots a graph of the polynomial with the given name in the given range, from <xMin> to <xMax>.)EOF";
 
-const char* HELPER_MESSAGE_HELP = R"EOF(USAGE: help([<commandName>])
+const char *HELPER_MESSAGE_HELP = R"EOF(USAGE: help([<commandName>])
 
 Displays general helper message, or helper message specific to <commandName> when <commandName> is provided.)EOF";
 
-const char* HELPER_MESSAGE_EXIT = R"EOF(USAGE: exit()
+const char *HELPER_MESSAGE_EXIT = R"EOF(USAGE: exit()
 
 Exits the program.)EOF";
 
-const char* HELPER_MESSAGE_CLEAR = R"EOF(USAGE: clear()
+const char *HELPER_MESSAGE_CLEAR = R"EOF(USAGE: clear()
 
 Clears all existing polynomials.)EOF";
 
-const char* HELPER_MESSAGE_ASSIGN = R"EOF(USAGE: assign(<polynomialName>, <expression>)
+const char *HELPER_MESSAGE_ASSIGN =
+    R"EOF(USAGE: assign(<polynomialName>, <expression>)
 
 Creates a new polynomial with the given name and expression, or assign a new polynomial to an existing name.
 Example: assign(a, b + {3} * {x^2 + 1 + 2x})
@@ -81,11 +83,12 @@ Expressions can include polynomial names (names that already have polynomials as
 Polynomials literals are delimited with "{" and "}". For example: "{1 + x^2}"
 Note that polynomial multiplications are not yet supported. For example, "{3} * {1 + x^2}" is allowed, but "{1 + x} * {1 - x}" is not.)EOF";
 
-const char* HELPER_MESSAGE_DISP = R"EOF(USAGE: disp()
+const char *HELPER_MESSAGE_DISP = R"EOF(USAGE: disp()
 
 Displays all existing polynomials.)EOF";
 
-const char* HELPER_MESSAGE_SET = R"EOF(USAGE: set(<propertyName>, <propertyValueArgument1>, ..., <propertyValueArgumentN>)
+const char *HELPER_MESSAGE_SET =
+    R"EOF(USAGE: set(<propertyName>, <propertyValueArgument1>, ..., <propertyValueArgumentN>)
 
 Set environment variables (properties).
 Supported properties:
@@ -110,17 +113,17 @@ Supported properties:
     Properties of this type include:
       GRID: Whether or not to show the grid when plotting polynomials. Default: OFF.)EOF";
 
-const char* HELPER_MESSAGE_CLC = R"EOF(USAGE: clc()
+const char *HELPER_MESSAGE_CLC = R"EOF(USAGE: clc()
 
 Clears the console.)EOF";
 
-const char* HELPER_MESSAGE_DELETE = R"EOF(delete(<polynomialName>)
+const char *HELPER_MESSAGE_DELETE = R"EOF(delete(<polynomialName>)
 
 Deletes the polynomial with the given name.)EOF";
 
 #define HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND "Unknown command: "
 
-const char* WELCOME_MESSAGE = R"EOF(Welcome to the Polynomial Calculator!
+const char *WELCOME_MESSAGE = R"EOF(Welcome to the Polynomial Calculator!
 
 This program is created by TrentFellbootman (that is, 人工智能2101 龚易明) and BochengZou (that is, 计试2101 邹博诚).
 
@@ -131,6 +134,8 @@ To see the usage of this program, type "help()".)EOF";
 #define UNKNOWN_OP_MESSAGE "Unknown command."
 #define MESSAGE_PREFIX_POLY_NOT_FOUND "Cannot find polynomial named "
 #define MESSAGE_FAILED_TO_PARSE_EXPRESSIONS "Failed to parse expression(s)"
+#define MESSAGE_FAILED_TO_PARSE_POLYNOMIALS "Failed to parse polynomial(s)"
+
 #define MESSAGE_TOO_MANY_ARGUMENTS "Too many arguments"
 #define MESSAGE_TOO_FEW_ARGUMENTS "Too few arguments"
 #define MESSAGE_INVALID_ARGUMENTS "Invalid argument(s)"

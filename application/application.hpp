@@ -19,20 +19,6 @@
 #define BUFFER_SIZE 1024
 
 namespace app {
-class variable_not_found_exception : public std::exception {
-private:
-  std::string err;
-
-public:
-public:
-  variable_not_found_exception(std::string var) {
-    char buffer[512];
-    std::snprintf(buffer, sizeof(buffer), POLYNOMIAL_NOT_FOUND_MESSAGE,
-                  var.c_str());
-    this->err = buffer;
-  }
-  const char *what() const noexcept override final { return err.c_str(); }
-};
 template <typename T> class Application {
 
 public:
@@ -153,7 +139,9 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
       ret.push(rpn[i].data.polynomial);
     }
   }
-
+  if (ret.size() > 1) {
+    throw invalid_expression_exception();
+  }
   return ret.top();
 }
 
@@ -161,7 +149,7 @@ template <typename T> void Application<T>::run() {
   char buffer[BUFFER_SIZE];
 
   logger.println(WELCOME_MESSAGE);
-  
+
   while (true) {
     logger.endLine();
     int indent = logger.getIndent();
@@ -208,9 +196,9 @@ template <typename T> void Application<T>::run() {
       std::string arg1 =
           helper::strip(args.substr(0, args.find_first_of(',')), ' ');
       std::string arg2 = args.substr(args.find_first_of(',') + 1);
-      std::vector<helper::Token<T>> tokens =
-          helper::expressionToTokens<T>(arg2);
       try {
+        std::vector<helper::Token<T>> tokens =
+            helper::expressionToTokens<T>(arg2);
         poly::Polynomial<T> p = calculateExpr(tokens);
         auto it = polynomials.find(arg1);
         if (it == polynomials.end()) {
@@ -252,8 +240,17 @@ template <typename T> void Application<T>::run() {
         logger.setLevel(Logger::Level::NORMAL);
       }
       if (polynomials.find(args[0]) != polynomials.end()) {
-        logger.println(std::to_string(
-            polynomials.find(args[0])->second.evaluate(atof(args[1].c_str()))));
+        try {
+          T x = std::stod(args[1]);
+          logger.println(
+              std::to_string(polynomials.find(args[0])->second.evaluate(x)));
+        } catch (std::exception &e) {
+          logger.setLevel(Logger::Level::ERROR);
+          logger.println(MESSAGE_FAILED_TO_PARSE_EXPRESSIONS);
+          logger.setLevel(Logger::Level::NORMAL);
+          continue;
+        }
+
       } else {
         logger.setLevel(Logger::Level::ERROR);
         logger.println(MESSAGE_PREFIX_POLY_NOT_FOUND + args[0]);
@@ -491,8 +488,8 @@ template <typename T> void Application<T>::run() {
           continue;
         }
 
-        logger.setSGR_input("\033[38;2;" + std::to_string(newColor.rgb[0]) + ";" +
-                            std::to_string(newColor.rgb[1]) + ";" +
+        logger.setSGR_input("\033[38;2;" + std::to_string(newColor.rgb[0]) +
+                            ";" + std::to_string(newColor.rgb[1]) + ";" +
                             std::to_string(newColor.rgb[2]) + "m");
       } else if (args[0] == "GRID") {
         if (args.size() < 2) {

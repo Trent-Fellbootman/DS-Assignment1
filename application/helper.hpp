@@ -1,4 +1,5 @@
 #include "constants.h"
+#include "exceptions.hpp"
 #include "polynomial.hpp"
 #include <cstring>
 #include <iostream>
@@ -87,7 +88,7 @@ double readDouble(const std::string &str, int &p) {
       buffer = buffer + str[p];
     }
   }
-  return atof(buffer.c_str());
+  return std::stod(buffer.c_str());
 }
 
 int readInt(const std::string &str, int &p) {
@@ -99,7 +100,7 @@ int readInt(const std::string &str, int &p) {
       buffer = buffer + str[p];
     }
   }
-  return atoi(buffer.c_str());
+  return std::stoi(buffer.c_str());
 }
 
 template <typename T>
@@ -125,18 +126,27 @@ poly::Polynomial<T> parsePolynomial(const std::string &expr) {
     if (neg) {
       coefficient = -coefficient;
     }
-    if (expr[i] != 'x') {
+    if (i == expr.size()) {
+      items.push_back(std::pair<T, uint32_t>(coefficient, 0));
+      break;
+    } else if (expr[i] != 'x' && (expr[i] == '+' || expr[i] == '-')) {
       items.push_back(std::pair<T, uint32_t>(coefficient, 0));
       i++;
-    } else {
+    } else if (expr[i] == 'x') {
       i++;
-      if (i >= expr.size() || expr[i] != '^') {
+      if (i >= expr.size()) {
+        items.push_back(std::pair<T, uint32_t>(coefficient, 1));
+        break;
+      }
+      if (expr[i] != '^') {
         items.push_back(std::pair<T, uint32_t>(coefficient, 1));
       } else {
         i++;
         uint32_t exponent = readInt(expr, i);
         items.push_back(std::pair<T, uint32_t>(coefficient, exponent));
       }
+    } else {
+      throw invalid_polynomial_exception();
     }
   }
 
