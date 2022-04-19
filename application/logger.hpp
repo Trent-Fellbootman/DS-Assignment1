@@ -59,13 +59,9 @@ public:
     uint32_t width;
   };
 
-  void setSGR_output(std::string newColor) {
-    SGR_output = newColor;
-  }
+  void setSGR_output(std::string newColor) { SGR_output = newColor; }
 
-  void setSGR_input(std::string newColor) {
-    SGR_input = newColor;
-  }
+  void setSGR_input(std::string newColor) { SGR_input = newColor; }
 
   uint32_t getIndent() { return currentIndent; }
   void setIndent(uint32_t newIndent) { currentIndent = newIndent; }
@@ -107,6 +103,7 @@ public:
         SGR_output(SGR_FG_GREEN) {
     setLevel(level);
   }
+  void restore() { stream << ANSI_RESTORE_CONSOLE << std::endl; }
 
   template <typename T> void printNumber(T number, Format format) {
     stream << *SGR_current;
@@ -181,8 +178,6 @@ public:
     stream << SGR_input;
   }
 
-  void clear() {
-    stream << ANSI_CLEAR_CONSOLE;
-  }
+  void clear() { stream << ANSI_CLEAR_CONSOLE; }
 };
 } // namespace app

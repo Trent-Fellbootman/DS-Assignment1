@@ -494,6 +494,7 @@ template <typename T> void Application<T>::run() {
     } break;
 
     case OpType::EXIT: {
+      logger.restore();
       return;
     }
     }

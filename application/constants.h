@@ -159,6 +159,7 @@ enum class TokenBrace { L, R };
 // ANSI Operators
 #define ANSI_BACKSPACE "\e[1D"
 #define ANSI_CLEAR_CONSOLE "\e[2J"
+#define ANSI_RESTORE_CONSOLE "\33[0m"
 
 // Logger
 #define LOGGER_PREFIX_WARNING "[WARNING] "
