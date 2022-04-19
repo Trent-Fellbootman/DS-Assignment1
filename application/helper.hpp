@@ -294,7 +294,7 @@ expression2RPN(const std::vector<helper::Token<T>> &tokens) {
           ts_s.pop();
         }
         if (!flag) {
-          printf("Invalid expression ( brace inconsistent)");
+          throw invalid_expression_exception();
         }
       } else {
         ts_s.push(tokens[i]);
@@ -324,7 +324,11 @@ expression2RPN(const std::vector<helper::Token<T>> &tokens) {
     }
   }
   while (!ts_s.empty()) {
-    rpn.push_back(ts_s.top());
+    helper::Token<T> t = ts_s.top();
+    if (t.tp == TokenTypes::BRACE) {
+      throw invalid_expression_exception();
+    }
+    rpn.push_back(t);
     ts_s.pop();
   }
   return rpn;
