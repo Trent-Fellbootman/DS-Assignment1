@@ -159,6 +159,9 @@ Application<T>::calculateExpr(const std::vector<helper::Token<T>> &tokens) {
 
 template <typename T> void Application<T>::run() {
   char buffer[BUFFER_SIZE];
+
+  logger.println(WELCOME_MESSAGE);
+  
   while (true) {
     logger.endLine();
     int indent = logger.getIndent();

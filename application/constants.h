@@ -120,6 +120,14 @@ Deletes the polynomial with the given name.)EOF";
 
 #define HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND "Unknown command: "
 
+const char* WELCOME_MESSAGE = R"EOF(Welcome to the Polynomial Calculator!
+
+This program is created by TrentFellbootman (that is, 人工智能2101 龚易明) and BochengZou (that is, 计试2101 邹博诚).
+
+Polynomial Calculator is developed completely by unpaid volunteers. To support them, please give them full marks in this project assignment.
+
+To see the usage of this program, type "help()".)EOF";
+
 #define UNKNOWN_OP_MESSAGE "Unknown command."
 #define MESSAGE_PREFIX_POLY_NOT_FOUND "Cannot find polynomial named "
 #define MESSAGE_FAILED_TO_PARSE_EXPRESSIONS "Failed to parse expression(s)"
