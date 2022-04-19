@@ -159,8 +159,8 @@ public:
           cur = cur->next.get();
           res.head->exponent++;
         }
-          cur1 = cur1->next.get();
-          cur2 = cur2->next.get();
+        cur1 = cur1->next.get();
+        cur2 = cur2->next.get();
       }
     }
 
@@ -245,8 +245,10 @@ public:
 
   std::string formatItem(T coefficient, uint32_t exponent) {
     std::stringstream stream;
-    if (coefficient != 1 || exponent == 0) {
+    if ((coefficient != 1 && coefficient != -1) || exponent == 0) {
       stream << coefficient;
+    } else if (coefficient == -1) {
+      stream << "-";
     }
     if (exponent == 1) {
       stream << "x";
