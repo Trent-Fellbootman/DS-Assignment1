@@ -89,7 +89,7 @@ void Application<T>::displayHelpMessage(std::vector<std::string> &args) {
       logger.println(HELPER_MESSAGE_DELETE);
     } else {
       logger.setLevel(Logger::Level::ERROR);
-      logger.println(HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND + args[1]);
+      logger.println(HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND + args[0]);
       logger.setLevel(Logger::Level::NORMAL);
     }
   }
@@ -189,6 +189,11 @@ template <typename T> void Application<T>::run() {
       std::string arguments = helper::strip(
           input.substr(argsStart, argsEnd - argsStart), WHITE_SPACE);
       std::vector<std::string> args = helper::separate(arguments, CHAR_COMMA);
+      if (args.size() > 1) {
+        logger.setLevel(Logger::Level::WARNING);
+        logger.println(MESSAGE_TOO_MANY_ARGUMENTS);
+        logger.setLevel(Logger::Level::NORMAL);
+      }
       displayHelpMessage(args);
       continue;
     } break;
