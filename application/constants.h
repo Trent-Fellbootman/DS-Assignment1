@@ -31,7 +31,7 @@
 #define MIN_CANVAS_HEIGHT 5
 
 #define INVALID_COMMAND_MESSAGE "Command is invalid (Type \"help()\" for help)."
-#define HELPER_MESSAGE R"EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
+const char* HELPER_MESSAGE = R"EOF(USAGE: <commandName>(arg1, arg2, ..., argn)
 
 All commands or arguments are case-sensitive.
 White space between function name and parenthesis is not allowed.
@@ -55,37 +55,37 @@ Supported commands:
   exit()
     Exits the program.
 
-For more information, use help(<commandName>) to display helper message specific to each command. For example, help(plot).)EOF"
+For more information, use help(<commandName>) to display helper message specific to each command. For example, help(plot).)EOF";
 
-#define HELPER_MESSAGE_PLOT R"EOF(USAGE: plot(<polynomialName>, <xMin>, <xMax>)
+const char* HELPER_MESSAGE_PLOT = R"EOF(USAGE: plot(<polynomialName>, <xMin>, <xMax>)
 
-Plots a graph of the polynomial with the given name in the given range, from <xMin> to <xMax>.)EOF"
+Plots a graph of the polynomial with the given name in the given range, from <xMin> to <xMax>.)EOF";
 
-#define HELPER_MESSAGE_HELP R"EOF(USAGE: help([<commandName>])
+const char* HELPER_MESSAGE_HELP = R"EOF(USAGE: help([<commandName>])
 
-Displays general helper message, or helper message specific to <commandName> when <commandName> is provided.)EOF"
+Displays general helper message, or helper message specific to <commandName> when <commandName> is provided.)EOF";
 
-#define HELPER_MESSAGE_EXIT R"EOF(USAGE: exit()
+const char* HELPER_MESSAGE_EXIT = R"EOF(USAGE: exit()
 
-Exits the program.)EOF"
+Exits the program.)EOF";
 
-#define HELPER_MESSAGE_CLEAR R"EOF(USAGE: clear()
+const char* HELPER_MESSAGE_CLEAR = R"EOF(USAGE: clear()
 
-Clears all existing polynomials.)EOF"
+Clears all existing polynomials.)EOF";
 
-#define HELPER_MESSAGE_ASSIGN R"EOF(USAGE: assign(<polynomialName>, <expression>)
+const char* HELPER_MESSAGE_ASSIGN = R"EOF(USAGE: assign(<polynomialName>, <expression>)
 
 Creates a new polynomial with the given name and expression, or assign a new polynomial to an existing name.
 Example: assign(a, b + {3} * {x^2 + 1 + 2x})
 Expressions can include polynomial names (names that already have polynomials assigned to) and/or polynomial literals.
 Polynomials literals are delimited with "{" and "}". For example: "{1 + x^2}"
-Note that polynomial multiplications are not yet supported. For example, "{3} * {1 + x^2}" is allowed, but "{1 + x} * {1 - x}" is not.)EOF"
+Note that polynomial multiplications are not yet supported. For example, "{3} * {1 + x^2}" is allowed, but "{1 + x} * {1 - x}" is not.)EOF";
 
-#define HELPER_MESSAGE_DISP R"EOF(USAGE: disp()
+const char* HELPER_MESSAGE_DISP = R"EOF(USAGE: disp()
 
-Displays all existing polynomials.)EOF"
+Displays all existing polynomials.)EOF";
 
-#define HELPER_MESSAGE_SET R"EOF(USAGE: set(<propertyName>, <propertyValueArgument1>, ..., <propertyValueArgumentN>)
+const char* HELPER_MESSAGE_SET = R"EOF(USAGE: set(<propertyName>, <propertyValueArgument1>, ..., <propertyValueArgumentN>)
 
 Set environment variables (properties).
 Supported properties:
@@ -108,15 +108,15 @@ Supported properties:
     Arguments for setting these properties are formatted as <ON/OFF>.
     Example: set(GRID, ON)
     Properties of this type include:
-      GRID: Whether or not to show the grid when plotting polynomials. Default: OFF.)EOF"
+      GRID: Whether or not to show the grid when plotting polynomials. Default: OFF.)EOF";
 
-#define HELPER_MESSAGE_CLC R"EOF(USAGE: clc()
+const char* HELPER_MESSAGE_CLC = R"EOF(USAGE: clc()
 
-Clears the console.)EOF"
+Clears the console.)EOF";
 
-#define HELPER_MESSAGE_DELETE R"EOF(delete(<polynomialName>)
+const char* HELPER_MESSAGE_DELETE = R"EOF(delete(<polynomialName>)
 
-Deletes the polynomial with the given name.)EOF"
+Deletes the polynomial with the given name.)EOF";
 
 #define HELPER_MESSAGE_PREFIX_UNKNOWN_COMMAND "Unknown command: "
 
