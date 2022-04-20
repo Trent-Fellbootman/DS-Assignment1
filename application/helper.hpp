@@ -204,7 +204,11 @@ std::vector<Token<T>> expressionToTokens(const std::string &expr) {
       switch (stripped[i]) {
       case LEFT_BRACKET: {
         buffer = stripped.substr(i + 1);
-        buffer = buffer.substr(0, buffer.find_first_of(RIGHT_BRACKET));
+        size_t rp = buffer.find_first_of(RIGHT_BRACKET);
+        if (rp == buffer.npos) {
+          throw invalid_expression_exception();
+        }
+        buffer = buffer.substr(0, rp);
         TokenData<T> data;
         data.polynomial = parsePolynomial<T>(buffer);
         Token<T> t;
