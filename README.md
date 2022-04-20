@@ -4,7 +4,8 @@
 
 PolyCal is an command-line application for doing calculations with and plotting polynomials.
 
-PolyCal is developed completely by unpaid volunteers. To support the developers, please <font size=12>give them full marks in this project assignment!!!<font>
+PolyCal is developed completely by unpaid volunteers. To support the developers, please
+### give them full marks in this project assignment.
 
 ## A Note for Windows Users
 
